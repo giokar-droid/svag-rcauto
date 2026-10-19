@@ -1,0 +1,1318 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="referrer" content="no-referrer">
+<title>La tua auto</title>
+<style>
+:root {
+  --bg: #F6F3EC; --card: #FFFFFF; --ink: #1D2927; --muted: #56635F; --line: #E3DDD0;
+  --accent: #00695C; --accent-ink: #FFFFFF; --accent-soft: #E3F0EE;
+  --gold: #9A7328; --warn: #9A4A1C; --off: #F1EEE6;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #141A19; --card: #1C2422; --ink: #E8EEEC; --muted: #A3B0AD; --line: #2D3735;
+    --accent: #4DB6A6; --accent-ink: #0E1413; --accent-soft: #1F3330;
+    --gold: #D4AE62; --warn: #E0936A; --off: #232C2A;
+  }
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0; background: var(--bg); color: var(--ink);
+  font: 17px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  padding-bottom: calc(96px + env(safe-area-inset-bottom));
+}
+.wrap { max-width: 680px; margin: 0 auto; padding: 0 16px; }
+header { padding: 18px 0 10px; }
+.marca { font-size: 15px; letter-spacing: .04em; text-transform: uppercase; color: var(--muted); }
+.avanz { height: 5px; background: var(--line); border-radius: 3px; margin-top: 12px; overflow: hidden; }
+.avanz > i { display: block; height: 100%; width: 0; background: var(--accent); transition: width .25s; }
+main:focus { outline: none; }
+h1 { font-size: 26px; line-height: 1.2; margin: 18px 0 8px; }
+h2 { font-size: 23px; line-height: 1.25; margin: 16px 0 4px; }
+h3 { font-size: 19px; margin: 22px 0 6px; }
+.sotto { color: var(--muted); margin: 0 0 14px; }
+p { margin: 0 0 12px; }
+ul.punti, ol.punti { padding-left: 22px; margin: 0 0 16px; }
+ul.punti li, ol.punti li { margin-bottom: 8px; }
+ul.punti ul { padding-left: 20px; margin: 6px 0 0; }
+.box { background: var(--accent-soft); border-radius: 12px; padding: 14px 16px; margin: 14px 0; }
+.box.oro { background: var(--off); border-left: 4px solid var(--gold); }
+.box ul { margin: 8px 0 0; padding-left: 20px; }
+.box li { margin-bottom: 6px; }
+.box .tit { font-weight: 700; }
+.box p:last-child { margin-bottom: 0; }
+
+/* domande */
+.dom { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 16px; margin: 14px 0; }
+.dom .dom { background: transparent; border: 0; border-left: 3px solid var(--accent-soft); border-radius: 0; padding: 2px 0 2px 14px; margin: 16px 0 4px; }
+.riga-el .dom { border-left: 0; padding-left: 0; margin: 14px 0 0; }
+.riga-el .dom .dom { border-left: 3px solid var(--line); padding-left: 12px; }
+.dom-t { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; }
+.lbl { font-weight: 650; font-size: 18px; line-height: 1.35; }
+.dom .dom .lbl { font-size: 17px; }
+.chip { display: inline-block; padding: 1px 10px; border-radius: 999px; background: var(--accent-soft); color: var(--accent); font-size: 15px; font-weight: 600; }
+.aiuto { color: var(--muted); font-size: 16px; margin-top: 4px; }
+.perche { color: var(--muted); font-size: 15px; margin-top: 6px; }
+.perche b { font-weight: 600; }
+.perche.forte { color: var(--ink); background: var(--off); border-left: 3px solid var(--gold); padding: 8px 12px; border-radius: 0 8px 8px 0; }
+.ctrl { margin-top: 10px; }
+.opzioni { display: grid; gap: 8px; }
+.opzioni.orizz { grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); }
+.opz {
+  font: inherit; text-align: left; width: 100%; min-height: 48px; line-height: 1.35;
+  padding: 11px 14px 11px 46px; border: 1.5px solid var(--line); border-radius: 12px;
+  background: var(--card); color: var(--ink); cursor: pointer; position: relative;
+}
+.opz::before {
+  content: ""; position: absolute; left: 14px; top: 50%; width: 20px; height: 20px; margin-top: -10px;
+  border: 2px solid var(--muted); border-radius: 50%; box-sizing: border-box;
+}
+.opz.check::before { border-radius: 5px; }
+.opz[aria-pressed="true"] { border-color: var(--accent); background: var(--accent-soft); font-weight: 600; }
+.opz.radio[aria-pressed="true"]::before { border-color: var(--accent); background: var(--accent); box-shadow: inset 0 0 0 3px var(--accent-soft); }
+.opz.check[aria-pressed="true"]::before { border-color: var(--accent); background: var(--accent); }
+.opz.check[aria-pressed="true"]::after {
+  content: ""; position: absolute; left: 21px; top: 50%; width: 6px; height: 11px; margin-top: -8px;
+  border: solid var(--accent-ink); border-width: 0 2.5px 2.5px 0; transform: rotate(45deg);
+}
+.opz:disabled { opacity: .5; cursor: default; }
+.pills { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+.pill {
+  font: inherit; font-size: 15px; line-height: 1.35; text-align: left; border: 1.5px solid var(--line);
+  background: transparent; color: var(--ink); border-radius: 999px; padding: 7px 14px; cursor: pointer;
+}
+.pill[aria-pressed="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+input.inp, textarea.inp, input.inp-x, textarea.inp-x {
+  width: 100%; font: inherit; padding: 12px 14px; border-radius: 10px;
+  border: 1.5px solid var(--line); background: var(--card); color: var(--ink);
+}
+textarea.inp, textarea.inp-x { resize: vertical; min-height: 84px; }
+input.inp:focus, textarea.inp:focus, input.inp-x:focus, textarea.inp-x:focus { outline: none; border-color: var(--accent); }
+.inp.sbagliato { border-color: var(--warn); }
+.riga-campo { display: flex; gap: 8px 10px; align-items: center; flex-wrap: wrap; }
+.num-w { position: relative; flex: 1 1 170px; max-width: 280px; }
+.num-w .cur { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--muted); font-size: 15px; pointer-events: none; }
+input.num { text-align: right; font-weight: 600; }
+input.num.imp { padding-left: 54px; }
+input.corto { max-width: 210px; }
+.unita-t { color: var(--muted); font-size: 16px; }
+.eta { color: var(--muted); font-size: 16px; }
+.valute { display: flex; border: 1.5px solid var(--line); border-radius: 10px; overflow: hidden; }
+.valute button { font: inherit; font-size: 15px; border: 0; background: var(--card); color: var(--muted); padding: 0 14px; min-height: 46px; cursor: pointer; }
+.valute button + button { border-left: 1px solid var(--line); }
+.valute button[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); font-weight: 600; }
+.err { color: var(--warn); font-size: 15px; margin-top: 6px; font-weight: 600; }
+.avvisi .box { margin: 10px 0 0; font-size: 16px; }
+.calcolo { margin-top: 10px; font-size: 16px; }
+.calcolo p { margin: 0 0 6px; }
+.calcolo .attenzione { color: var(--warn); font-weight: 600; }
+.nota { font-size: 15px; color: var(--muted); }
+.precnota { margin-top: 8px; }
+.riquadro { background: var(--off); border-radius: 12px; padding: 12px 14px; margin-top: 12px; font-size: 16px; }
+.riquadro .tit { font-weight: 700; margin-bottom: 4px; }
+.riquadro ol, .riquadro ul { margin: 4px 0 0; padding-left: 22px; }
+.riquadro li { margin-bottom: 4px; }
+table { width: 100%; border-collapse: collapse; }
+td, th { padding: 9px 6px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; font-size: 16px; }
+th { font-size: 15px; color: var(--muted); font-weight: 600; }
+td.n { text-align: right; white-space: nowrap; }
+#app { overflow-wrap: break-word; }
+td { overflow-wrap: break-word; }
+table td:first-child:not([colspan]) { width: 44%; }
+table.veicolo { margin: 4px 0 6px; }
+table.veicolo td.n { white-space: normal; min-width: 90px; }
+table.veicolo td:first-child { width: 58%; }
+tr.sub td:first-child { padding-left: 18px; color: var(--muted); }
+.vl { margin: 0; padding-left: 18px; }
+.vl li { margin-bottom: 2px; }
+.kv { margin-bottom: 6px; }
+.kvs { margin: 6px 0 0 14px; }
+.kv .k { color: var(--muted); }
+.cat-tit { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; margin-top: 24px; }
+.cat-tit a { font-size: 16px; color: var(--accent); white-space: nowrap; }
+
+/* elenchi ripetibili */
+.righe { display: block; }
+.riga-el { border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px 14px; margin: 12px 0; background: var(--bg); }
+.riga-tit { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+.riga-tit b { font-size: 17px; }
+.el-azioni { display: grid; gap: 8px; margin-top: 10px; }
+.el-azioni .pill { justify-self: start; }
+
+/* pulsanti */
+button.link {
+  font: inherit; font-size: 16px; background: transparent; border: 0; color: var(--accent);
+  text-decoration: underline; text-underline-offset: 3px; padding: 4px 0; cursor: pointer;
+}
+.azioni { display: grid; gap: 10px; margin: 18px 0; }
+button.primario, button.secondario {
+  font: inherit; font-weight: 650; border-radius: 12px; padding: 14px 18px; cursor: pointer; text-align: center;
+}
+button.primario { background: var(--accent); color: var(--accent-ink); border: 0; font-size: 18px; }
+button.secondario { background: var(--card); color: var(--ink); border: 1.5px solid var(--line); }
+button.largo { width: 100%; }
+details { margin: 12px 0; }
+details summary { cursor: pointer; color: var(--muted); font-size: 16px; }
+pre { white-space: pre-wrap; word-break: break-all; background: var(--off); padding: 12px; border-radius: 10px; font-size: 15px; }
+.esito { font-weight: 600; color: var(--accent); min-height: 1.5em; }
+label.campo { display: block; font-weight: 650; margin: 18px 0 6px; }
+button:focus-visible, a:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+
+nav.barra {
+  position: fixed; left: 0; right: 0; bottom: 0; background: var(--bg);
+  border-top: 1px solid var(--line); padding: 10px 0 calc(10px + env(safe-area-inset-bottom));
+}
+nav.barra .wrap { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+nav.barra button { font: inherit; font-weight: 650; border-radius: 12px; padding: 12px 16px; min-width: 112px; cursor: pointer; }
+#indietro { background: transparent; border: 1.5px solid var(--line); color: var(--ink); }
+#avanti { background: var(--accent); border: 0; color: var(--accent-ink); }
+nav.barra .invisibile { visibility: hidden; }
+#passo { font-size: 15px; color: var(--muted); text-align: center; }
+.vuoto { text-align: center; padding: 40px 0; color: var(--muted); }
+</style>
+<script src="domande.js"></script>
+</head>
+<body>
+<header class="wrap">
+  <div class="marca">Giorgio Carrara, consulenza patrimoniale SVAG</div>
+  <div class="avanz" aria-hidden="true"><i id="avanz"></i></div>
+</header>
+<main class="wrap" id="app" tabindex="-1"></main>
+<nav class="barra" aria-label="Navigazione">
+  <div class="wrap">
+    <button id="indietro" type="button">← Indietro</button>
+    <span id="passo"></span>
+    <button id="avanti" type="button">Avanti →</button>
+  </div>
+</nav>
+
+<script>
+(function () {
+  "use strict";
+  // Wizard RC auto per il cliente, versione 1.0 (11.10.2026).
+  // Le domande arrivano da domande.js, generato da build.py dalla banca rcauto_domande_v1.json:
+  // qui non si scrivono domande. La pagina non trasmette niente: il cliente manda le risposte da sé.
+  var VERSIONE = "1.0";
+  var CHIAVE = "svag-rcauto-wizard-v1";      // «Cancella» toglie solo questa chiave
+  var TITOLO = "La tua auto: i dati per l'assicurazione";
+  var B = window.SVAG_RCAUTO;
+  var app = document.getElementById("app");
+  if (!B || !B.passi) {
+    app.innerHTML = '<p class="vuoto">La pagina non si è caricata del tutto. Ricaricala tra un attimo.</p>';
+    return;
+  }
+  var RIT = B.ritorno;
+  var OGGI = new Date(); OGGI.setHours(12, 0, 0, 0);
+  try { if ("scrollRestoration" in history) history.scrollRestoration = "manual"; } catch (e) {}
+  var NOME_RIGA = { conducenti: "Persona", altri_veicoli: "Veicolo", sinistri: "Danno",
+                    ritiro_licenza: "Ritiro", proposta_rifiutata: "Rifiuto o disdetta" };
+
+  // ── indici della banca
+  var Q = {}, SUB = {}, PASSO_DI = {}, EL = {}, ELC = {}, DOC = {}, RAMO = {}, PASSO = {};
+  function indicizza(d) {
+    (d.campi || []).forEach(function (c) { SUB[c.id] = { def: c, padre: d.id }; indicizza(c); });
+  }
+  B.passi.forEach(function (p) {
+    PASSO[p.id] = p;
+    p.domande.forEach(function (d) {
+      Q[d.id] = d; PASSO_DI[d.id] = p;
+      if (d.tipo === "elenco") {
+        EL[d.id] = d;
+        var m = ELC[d.id] = {};
+        (function giu(lista, padre) {
+          (lista || []).forEach(function (c) { m[c.id] = { def: c, padre: padre }; giu(c.campi, c.id); });
+        })(d.campi, null);
+      } else indicizza(d);
+    });
+  });
+  B.documenti.forEach(function (d) { DOC[d.id] = d; });
+  B.rami.forEach(function (r) { RAMO[r.id] = r; });
+  function def(id) { return Q[id] || (SUB[id] && SUB[id].def) || null; }
+
+  // ── piccoli attrezzi
+  function esc(s) { return String(s == null ? "" : s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
+  function vuoto(x) { return x === undefined || x === null || x === "" || (Array.isArray(x) && !x.length); }
+  function same(a, b) { return JSON.stringify(a) === JSON.stringify(b); }
+  function clona(x) { return x === undefined ? undefined : JSON.parse(JSON.stringify(x)); }
+  function pad2(n) { return (n < 10 ? "0" : "") + n; }
+  function dataTesto(dt) { return pad2(dt.getDate()) + "." + pad2(dt.getMonth() + 1) + "." + dt.getFullYear(); }
+  function maiuscola(s) { return s ? s.charAt(0).toUpperCase() + s.slice(1) : s; }
+  function trovaOpz(d, v) {
+    var l = (d && d.opzioni) || [];
+    for (var i = 0; i < l.length; i++) if (l[i].v === v) return l[i];
+    return null;
+  }
+  function rapida(d, v) {
+    var r = (d && d.scelte_rapide) || {}, k, i;
+    for (k in r) for (i = 0; i < r[k].length; i++) if (r[k][i].v === v) return r[k][i];
+    return null;
+  }
+  function codicePill(d, v) { return v === "nonso" || !!rapida(d, v); }
+
+  // numeri: accetta 12'500, 12 500, 12.500, 1490,50 e 1490.50
+  function norm(t) {
+    t = String(t == null ? "" : t).replace(/chf|eur|fr\.?|km|cm³|€/ig, "").replace(/[\s'’`´]/g, "");
+    if (t === "") return "";
+    if (/^\d{1,3}(\.\d{3})+$/.test(t)) t = t.replace(/\./g, "");
+    else if (/^\d{1,3}(,\d{3})+$/.test(t)) t = t.replace(/,/g, "");
+    else if (t.indexOf(",") >= 0 && t.indexOf(".") < 0) t = t.replace(",", ".");
+    if (!/^\d*\.?\d*$/.test(t) || t === ".") return null;
+    var n = Number(t);
+    if (!isFinite(n) || n < 0) return null;
+    return String(Math.round(n * 100) / 100);
+  }
+  function fmtNum(s) {
+    var n = Number(s);
+    if (!isFinite(n)) return String(s);
+    var f = Math.abs(n).toFixed(n % 1 !== 0 ? 2 : 0).split(".");
+    f[0] = f[0].replace(/\B(?=(\d{3})+(?!\d))/g, "'");
+    return (n < 0 ? "-" : "") + f.join(".");
+  }
+
+  // date: sempre GG.MM.AAAA, mai il campo data del browser
+  function costruisciData(g, m, a) {
+    if (a < 100) a += (2000 + a <= OGGI.getFullYear() + 5) ? 2000 : 1900;
+    if (a < 1900 || a > 2100 || m < 1 || m > 12 || g < 1 || g > 31) return null;
+    var dt = new Date(a, m - 1, g, 12);
+    if (dt.getMonth() !== m - 1 || dt.getDate() !== g) return null;
+    return { d: dt, testo: pad2(g) + "." + pad2(m) + "." + a };
+  }
+  function leggiData(s) {
+    if (typeof s !== "string") return null;
+    s = s.trim(); var m;
+    if ((m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(s))) return costruisciData(+m[3], +m[2], +m[1]);
+    if ((m = /^(\d{1,2})[.\/\- ](\d{1,2})[.\/\- ](\d{2}|\d{4})$/.exec(s))) return costruisciData(+m[1], +m[2], +m[3]);
+    if ((m = /^(\d{2})(\d{2})(\d{4})$/.exec(s))) return costruisciData(+m[1], +m[2], +m[3]);
+    if ((m = /^(\d{2})(\d{2})(\d{2})$/.exec(s))) return costruisciData(+m[1], +m[2], +m[3]);
+    return null;
+  }
+  function leggiMeseAnno(s) {
+    s = String(s).trim();
+    var m = /^(\d{1,2})[.\/\- ](\d{2}|\d{4})$/.exec(s) || /^(\d{1,2})(\d{4})$/.exec(s);
+    if (!m) return null;
+    var mm = +m[1], a = +m[2]; if (a < 100) a += 2000;
+    if (mm < 1 || mm > 12 || a < 1950 || a > OGGI.getFullYear() + 2) return null;
+    return pad2(mm) + "." + a;
+  }
+  function leggiDataOAnno(s) {
+    s = String(s).trim();
+    if (/^\d{4}$/.test(s)) { var a = +s; return (a >= 1950 && a <= OGGI.getFullYear() + 1) ? s : null; }
+    if (/^\d{1,2}[.\/\- ]\d{4}$/.test(s) || /^\d{6}$/.test(s)) { var ma = leggiMeseAnno(s); if (ma) return ma; }
+    var d = leggiData(s); return d ? d.testo : null;
+  }
+  // punti automatici mentre si digita una data: «1.2.» diventa «01.02.», le cifre si raggruppano 2-2-4
+  function dataDalVivo(raw) {
+    var parti = raw.replace(/[\/\- ]/g, ".").replace(/[^\d.]/g, "").split(".");
+    for (var i = 0; i < parti.length - 1 && i < 2; i++) if (parti[i].length === 1) parti[i] = "0" + parti[i];
+    var c = parti.join("").slice(0, 8);
+    if (c.length > 4) return c.slice(0, 2) + "." + c.slice(2, 4) + "." + c.slice(4);
+    if (c.length > 2) return c.slice(0, 2) + "." + c.slice(2);
+    return c;
+  }
+  function anni(da, a) {
+    var n = a.getFullYear() - da.getFullYear();
+    if (a.getMonth() < da.getMonth() || (a.getMonth() === da.getMonth() && a.getDate() < da.getDate())) n--;
+    return n;
+  }
+  function firma(s) { var h = 0; for (var i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) | 0; return String(h); }
+
+  // ── frammento del link (tutto dopo «#» resta nel browser: il sito che ospita la pagina non lo riceve)
+  function leggiHash(nome) {
+    var m = new RegExp("(?:^|[#&])" + nome + "=([^&]*)").exec(location.hash);
+    return m ? m[1] : null;
+  }
+  // #salta=id,id,… : solo nomi di domanda o di documento, mai dati
+  var SALTA = null;
+  (function () {
+    var s = leggiHash("salta"); if (s === null) return;
+    var amm = {}; B.salta_ammessi.forEach(function (k) { amm[k] = true; });
+    try { s = decodeURIComponent(s); } catch (e) {}
+    SALTA = {};
+    s.split(",").forEach(function (id) { id = id.trim(); if (amm[id]) SALTA[id] = true; });
+  })();
+  // #pre=<base64url di un JSON {id: valore}> (formato della banca) oppure di «id=valore;id=valore»
+  function daBase64url(s) {
+    var b64 = s.replace(/-/g, "+").replace(/_/g, "/");
+    while (b64.length % 4) b64 += "=";
+    return decodeURIComponent(Array.prototype.map.call(atob(b64), function (ch) {
+      return "%" + ("00" + ch.charCodeAt(0).toString(16)).slice(-2);
+    }).join(""));
+  }
+  function valorePre(d, x) {
+    if (x === null || x === undefined) return null;
+    if (d.tipo === "scelta_multipla") {
+      var arr = (Array.isArray(x) ? x : String(x).split(",")).map(function (y) { return String(y).trim(); })
+        .filter(function (y) { return !!trovaOpz(d, y); });
+      return arr.length ? arr : null;
+    }
+    x = String(x).trim();
+    if (!x || x.length > 80) return null;
+    if (d.tipo === "scelta" || d.tipo === "si_no") return trovaOpz(d, x) ? x : null;
+    if (d.tipo === "data") { var dd = leggiData(x); return dd ? dd.testo : null; }
+    if (d.tipo === "numero" || d.tipo === "importo") { var n = norm(x); return n ? n : null; }
+    if (d.tipo === "testo") return x.replace(/[\u0000-\u001f<>]/g, "");
+    return null;
+  }
+  var PRE = null;
+  (function () {
+    var s = leggiHash("pre"); if (!s) return;
+    var testo, grezzo = {};
+    try { testo = daBase64url(s).trim(); } catch (e) { return; }
+    if (testo.charAt(0) === "{") {
+      try { grezzo = JSON.parse(testo); } catch (e) { return; }
+      if (!grezzo || typeof grezzo !== "object") return;
+    } else {
+      testo.split(";").forEach(function (kv) {
+        var i = kv.indexOf("="); if (i > 0) grezzo[kv.slice(0, i).trim()] = kv.slice(i + 1).trim();
+      });
+    }
+    var amm = {}; B.pre_ammessi.forEach(function (k) { amm[k] = true; });
+    var v = {}, ids = [];
+    Object.keys(grezzo).forEach(function (k) {
+      var d = Q[k];
+      if (!amm[k] || !d || !d.pre || d.personale) return;   // ogni altra chiave si ignora
+      var x = valorePre(d, grezzo[k]); if (x === null) return;
+      v[k] = x; ids.push(k);
+    });
+    if (ids.length) PRE = { v: v, ids: ids, firma: firma(s) };
+  })();
+
+  // ── stato, conservato solo nel browser di questo dispositivo
+  function statoVuoto() {
+    return { v: 1, schermo: "intro", nome: "", nota: "", r: {}, val: {}, el: {}, doc: {},
+             pre: {}, tocc: {}, prec: {}, salta: [], preFirma: "" };
+  }
+  function applicaPre(st) {
+    if (!PRE) return st;
+    PRE.ids.forEach(function (k) { st.r[k] = clona(PRE.v[k]); st.pre[k] = clona(PRE.v[k]); });
+    st.preFirma = PRE.firma;
+    return st;
+  }
+  var S = statoVuoto(), ripreso = false;
+  try {
+    var sv = JSON.parse(localStorage.getItem(CHIAVE) || "null");
+    if (sv && typeof sv === "object" && sv.v === 1 && (!PRE || sv.preFirma === PRE.firma)) {
+      ["schermo", "nome", "nota", "preFirma"].forEach(function (k) { if (typeof sv[k] === "string") S[k] = sv[k]; });
+      ["r", "val", "el", "doc", "pre", "tocc", "prec"].forEach(function (k) {
+        if (sv[k] && typeof sv[k] === "object" && !Array.isArray(sv[k])) S[k] = sv[k];
+      });
+      if (Array.isArray(sv.salta)) S.salta = sv.salta;
+      ripreso = true;
+    } else {
+      S = applicaPre(statoVuoto());                 // link nuovo, o di un'altra auto: si riparte
+      if (sv && typeof sv.nome === "string") S.nome = sv.nome;
+    }
+  } catch (e) { S = applicaPre(statoVuoto()); }   // archivio non disponibile: si lavora senza
+  if (SALTA === null) {                            // riaperta senza #salta: vale quello di prima
+    SALTA = {};
+    S.salta.forEach(function (id) { if (B.salta_ammessi.indexOf(id) >= 0) SALTA[id] = true; });
+  }
+  S.salta = Object.keys(SALTA);
+
+  function statoEl(id) {
+    var e = S.el[id];
+    if (!e || typeof e !== "object" || !Array.isArray(e.righe)) e = S.el[id] = { righe: [], vuoto: false, nonso: false, seq: 0 };
+    return e;
+  }
+  function righe(id) { return (S.el[id] && Array.isArray(S.el[id].righe)) ? S.el[id].righe : []; }
+  function riga(eid, k) {
+    var l = righe(eid);
+    for (var i = 0; i < l.length; i++) if (l[i]._k === k) return l[i];
+    return null;
+  }
+  function nienteDaSalvare() {
+    if (S.schermo !== "intro" || S.nome || S.nota || Object.keys(S.doc).length) return false;
+    var el = Object.keys(S.el).some(function (k) { var e = S.el[k]; return e && (righe(k).length || e.vuoto || e.nonso); });
+    if (el) return false;
+    return Object.keys(S.r).every(function (k) { return S.pre.hasOwnProperty(k) && same(S.r[k], S.pre[k]); });
+  }
+  var tSalva = null;
+  function salvaSubito() {
+    clearTimeout(tSalva);
+    try {
+      if (nienteDaSalvare()) localStorage.removeItem(CHIAVE);
+      else localStorage.setItem(CHIAVE, JSON.stringify(S));
+    } catch (e) {}
+  }
+  function salva() { clearTimeout(tSalva); tSalva = setTimeout(salvaSubito, 300); }
+  if (ripreso) ripreso = !nienteDaSalvare();
+
+  // ── valori e condizioni
+  var cache = null;
+  function C() { if (!cache) cache = { vis: {}, val: {}, ramo: {} }; return cache; }
+  function invalida() { cache = null; }
+  // valore che conta: quello di una domanda visibile, o arrivato dal #pre
+  function V(id) {
+    var c = C();
+    if (c.val.hasOwnProperty(id)) return c.val[id];
+    c.val[id] = undefined;
+    var x = S.r[id], res;
+    if (vuoto(x)) res = undefined;
+    else if (S.pre.hasOwnProperty(id)) res = x;
+    else res = visibile(id) ? x : undefined;
+    c.val[id] = res;
+    return res;
+  }
+  function visibile(id) {
+    var c = C();
+    if (c.vis.hasOwnProperty(id)) return c.vis[id];
+    c.vis[id] = false;
+    var res = false;
+    if (SALTA[id]) res = false;
+    else if (Q[id]) res = cond(PASSO_DI[id].visibile_se) && cond(Q[id].visibile_se);
+    else if (SUB[id]) res = visibile(SUB[id].padre) && cond(SUB[id].def.visibile_se);
+    c.vis[id] = res;
+    return res;
+  }
+  function visRiga(rw, eid, id) {
+    var info = ELC[eid] && ELC[eid][id];
+    if (!info) return false;
+    if (info.padre && !visRiga(rw, eid, info.padre)) return false;
+    return cond(info.def.visibile_se, rw, eid);
+  }
+  function VR(rw, eid, id) {
+    if (!ELC[eid] || !ELC[eid][id]) return V(id);
+    var x = rw[id];
+    if (vuoto(x)) return undefined;
+    return visRiga(rw, eid, id) ? x : undefined;
+  }
+  function cond(c, rw, eid) {
+    if (!c) return true;
+    if (c.sempre) return true;
+    if (c.mai) return false;
+    if (c.tutte) return c.tutte.every(function (x) { return cond(x, rw, eid); });
+    if (c.una) return c.una.some(function (x) { return cond(x, rw, eid); });
+    if (c.non) return !cond(c.non, rw, eid);
+    if (c.ramo) return ramo(c.ramo);
+    if (c.pre) return S.pre.hasOwnProperty(c.pre);
+    if (c.pre_qualcuno) return Object.keys(S.pre).length > 0;
+    if (c.elenco) return visibile(c.elenco) && righe(c.elenco).length > 0;
+    if (c.r) {
+      var v = (rw && ELC[eid] && ELC[eid][c.r]) ? VR(rw, eid, c.r) : V(c.r);
+      if (vuoto(v)) return false;
+      if (c["in"]) return Array.isArray(v) ? v.some(function (x) { return c["in"].indexOf(x) >= 0; }) : c["in"].indexOf(v) >= 0;
+      return true;
+    }
+    if (c.calcolo) return false;
+    return true;
+  }
+  function decorrenza() {
+    var d = leggiData(V("data_decorrenza")) || leggiData(V("import_data_collaudo"));
+    if (d) return d.d;
+    var q = V("import_quando"), x = new Date(OGGI);
+    if (q === "entro_1") x.setMonth(x.getMonth() + 1);
+    else if (q === "1_3") x.setMonth(x.getMonth() + 3);
+    return x;
+  }
+  function ramoCalcolato(id) {
+    if (id === "auto_recente") {
+      if (V("provenienza") === "nuova") return true;
+      var pi = leggiData(V("prima_immatricolazione"));
+      if (pi) return anni(pi.d, OGGI) <= 7;
+      var aa = V("anno_auto");
+      if (aa && aa !== "nonso") return ["nuova", "meno_5", "5_7"].indexOf(aa) >= 0;
+      return true;                                   // età ignota: meglio chiedere
+    }
+    if (id === "altra_persona" || id === "detentore_diviso") {
+      if (V("detentore_filtro") !== "no") return false;
+      var ris = ["detentore_paga_auto", "detentore_paga_spese", "detentore_posteggio", "detentore_decide"].map(V);
+      var altra = ris.filter(function (x) { return x === "altra"; }).length;
+      var meta = ris.filter(function (x) { return x === "meta"; }).length;
+      if (id === "altra_persona") return altra >= 2;
+      return altra === 1 && altra + meta >= 3;
+    }
+    if (id === "giovani") {
+      if (V("conducenti_giovani") === "si") return true;
+      var dec = decorrenza();
+      var g = leggiData(V("giovani_nascita"));
+      if (g && anni(g.d, dec) < 25) return true;
+      if (!visibile("conducenti")) return false;
+      return righe("conducenti").some(function (rw) {
+        var n = leggiData(VR(rw, "conducenti", "nascita")); return !!n && anni(n.d, dec) < 25;
+      });
+    }
+    if (id === "licenza_estera") {
+      var est = ["estera_chiesta", "estera_no", "estera_nonsapevo"];
+      if (est.indexOf(V("io_patente")) >= 0) return true;
+      if (!visibile("conducenti")) return false;
+      return righe("conducenti").some(function (rw) { return est.indexOf(VR(rw, "conducenti", "patente_tipo")) >= 0; });
+    }
+    return false;
+  }
+  function ramo(id) {
+    var c = C();
+    if (c.ramo.hasOwnProperty(id)) return c.ramo[id];
+    c.ramo[id] = false;
+    var r = RAMO[id], res = false;
+    if (r) res = r.condizione ? cond(r.condizione) : ramoCalcolato(id);
+    c.ramo[id] = res;
+    return res;
+  }
+
+  // ── schermate: intro, i passi visibili, riepilogo
+  function docVisibile(id) { return !!DOC[id] && !SALTA[id] && cond(DOC[id].visibile_se); }
+  function docVisibili() {
+    var p = PASSO.documenti, l = p && p.documenti ? p.documenti : Object.keys(DOC);
+    return l.filter(docVisibile);
+  }
+  function passoVisibile(p) {
+    if (!cond(p.visibile_se)) return false;
+    if (p.documenti) return docVisibili().length > 0;
+    return p.domande.some(function (d) { return visibile(d.id); });
+  }
+  function schermi() {
+    var l = ["intro"];
+    B.passi.forEach(function (p) { if (passoVisibile(p)) l.push(p.id); });
+    l.push("riepilogo");
+    return l;
+  }
+  function vicino(dir) {
+    var l = schermi(), i = l.indexOf(S.schermo);
+    if (i >= 0) return l[Math.min(Math.max(i + dir, 0), l.length - 1)];
+    var ordine = ["intro"].concat(B.passi.map(function (p) { return p.id; })).concat(["riepilogo"]);
+    for (var t = ordine.indexOf(S.schermo) + dir; t >= 0 && t < ordine.length; t += dir)
+      if (l.indexOf(ordine[t]) >= 0) return ordine[t];
+    return "intro";
+  }
+  function minutiStimati() {
+    // 15 s per scelta, 25 per numero, data o testo, 45 per testo lungo, 20 per sottodomanda,
+    // 90 per riga d'elenco, 4 minuti fissi, e 5 minuti per quello che si apre con le risposte
+    var sec = 240 + 300;
+    B.passi.forEach(function (p) {
+      if (!cond(p.visibile_se) || p.documenti) return;
+      p.domande.forEach(function (d) {
+        if (!visibile(d.id)) return;
+        if (d.tipo === "elenco") { var n = righe(d.id).length; sec += n ? n * 90 : 15; return; }
+        sec += { scelta: 15, scelta_multipla: 15, si_no: 15, conferma_veicolo: 15, testo_lungo: 45 }[d.tipo] || 25;
+        (d.campi || []).forEach(function (c) { if (visibile(c.id)) sec += 20; });
+      });
+    });
+    return Math.max(10, Math.round(sec / 300) * 5);
+  }
+
+  // ── contesto di un blocco nella pagina
+  function ctxDi(el) {
+    if (el.getAttribute("data-doc")) { var id0 = el.getAttribute("data-doc"); return { doc: id0, id: id0, def: DOC[id0] }; }
+    var id = el.getAttribute("data-b"), e = el.getAttribute("data-e"), k = el.getAttribute("data-k");
+    return { id: id, e: e, k: k, def: e ? ELC[e][id].def : def(id) };
+  }
+  function valOf(x) {
+    if (x.doc) return S.doc[x.id];
+    if (x.k) { var rw = riga(x.e, x.k); return rw ? rw[x.id] : undefined; }
+    return S.r[x.id];
+  }
+  function setVal(x, v) {
+    if (x.doc) { if (vuoto(v)) delete S.doc[x.id]; else S.doc[x.id] = v; return; }
+    var dove = x.k ? riga(x.e, x.k) : S.r;
+    if (!dove) return;
+    if (vuoto(v)) delete dove[x.id]; else dove[x.id] = v;
+    if (!x.k) { if (S.pre.hasOwnProperty(x.id)) S.tocc[x.id] = true; delete S.prec[x.id]; }
+  }
+  function valuta(x) {
+    if (x.k) { var rw = riga(x.e, x.k); return rw && rw[x.id + "_valuta"] === "EUR" ? "EUR" : "CHF"; }
+    return S.val[x.id] === "EUR" ? "EUR" : "CHF";
+  }
+  function nomeConducente(k) {
+    var l = righe("conducenti");
+    for (var i = 0; i < l.length; i++) if (l[i]._k === k) return l[i].nome || ("Persona " + (i + 1));
+    return "Una persona che hai tolto dall'elenco";
+  }
+  function opzioniDi(d) {
+    var l = (d.opzioni || []).slice();
+    if (d.opzioni_da === "conducenti") {
+      var extra = righe("conducenti").map(function (rw, i) { return { v: "cond:" + rw._k, t: rw.nome || ("Persona " + (i + 1)) }; });
+      l = l.slice(0, 1).concat(extra).concat(l.slice(1));
+    }
+    return l;
+  }
+  function testoPerRamo(mappa) {
+    for (var k in mappa) if (mappa.hasOwnProperty(k) && ramo(k)) return mappa[k];
+    return null;
+  }
+
+  // ── disegno di una domanda (solo al cambio di passo: mai mentre si digita)
+  var TIPI_INPUT = { numero: 1, importo: 1, testo: 1, testo_lungo: 1, telefono: 1, email: 1, data: 1, data_o_anno: 1, mese_anno: 1 };
+  function htmlDomanda(d, ctx) {
+    var iid = "i_" + (ctx ? ctx.k + "_" : "") + d.id;
+    var h = '<div class="dom' + (d.tipo === "elenco" ? " dom-elenco" : "") + '" data-b="' + esc(d.id) + '"' +
+      (ctx ? ' data-e="' + esc(ctx.e) + '" data-k="' + esc(ctx.k) + '"' : "") + '>';
+    h += '<div class="dom-t">' + (TIPI_INPUT[d.tipo] ? '<label class="lbl" for="' + iid + '">' : '<span class="lbl" id="l_' + iid + '">') +
+      esc(d.testo) + (TIPI_INPUT[d.tipo] ? "</label>" : "</span>") + '<span class="chip" hidden>dai tuoi documenti</span></div>';
+    if (d.aiuto) h += '<div class="aiuto">' + esc(d.aiuto) + "</div>";
+    if (d.perche) h += '<div class="perche' + (d.invadente ? " forte" : "") + '"><b>Perché te lo chiedo:</b> <span class="pt">' + esc(d.perche) + "</span></div>";
+    h += '<div class="ctrl">' + htmlControlli(d, ctx, iid) + "</div>";
+    h += htmlPills(d);
+    h += '<div class="err" hidden></div><div class="avvisi"></div>';
+    if (d.calcolo) h += '<div class="calcolo" hidden></div>';
+    if (d.precompila) h += '<div class="precnota nota" hidden></div>';
+    if (d.riquadro) {
+      var r = d.riquadro, tag = r.numerato ? "ol" : "ul";
+      h += '<div class="riquadro">' + (r.titolo ? '<div class="tit">' + esc(r.titolo) + "</div>" : "") +
+        "<" + tag + ">" + r.punti.map(function (t) { return "<li>" + esc(t) + "</li>"; }).join("") + "</" + tag + "></div>";
+    }
+    if (d.tipo !== "elenco" && d.campi && d.campi.length)
+      h += d.campi.map(function (c) { return htmlDomanda(c, ctx); }).join("");
+    return h + "</div>";
+  }
+  function htmlControlli(d, ctx, iid) {
+    var t = d.tipo;
+    if (t === "scelta" || t === "si_no" || t === "scelta_multipla" || t === "conferma_veicolo") {
+      var h = t === "conferma_veicolo" ? htmlTabellaVeicolo(d) : "";
+      h += '<div class="opzioni" role="group" aria-labelledby="l_' + iid + '">';
+      opzioniDi(d).forEach(function (o) {
+        h += '<button type="button" class="opz ' + (t === "scelta_multipla" ? "check" : "radio") + '" data-v="' + esc(o.v) +
+          '" aria-pressed="false">' + esc(o.t) + "</button>";
+      });
+      return h + "</div>";
+    }
+    if (t === "elenco") return htmlElenco(d);
+    if (t === "testo_lungo") return '<textarea class="inp" id="' + iid + '" rows="3" maxlength="1000" data-t="testo_lungo"></textarea>';
+    if (t === "testo") return '<input class="inp" type="text" id="' + iid + '" maxlength="200" autocomplete="off" data-t="testo">';
+    if (t === "telefono") return '<input class="inp corto" type="tel" inputmode="tel" id="' + iid + '" maxlength="30" autocomplete="tel" data-t="telefono">';
+    if (t === "email") return '<input class="inp" type="email" inputmode="email" id="' + iid + '" maxlength="120" autocomplete="email" autocapitalize="off" spellcheck="false" data-t="email">';
+    if (t === "data") return '<div class="riga-campo"><input class="inp corto" type="text" inputmode="numeric" id="' + iid +
+      '" maxlength="10" placeholder="GG.MM.AAAA" autocomplete="off" data-t="data"><span class="eta"></span></div>';
+    if (t === "data_o_anno") return '<input class="inp corto" type="text" inputmode="numeric" id="' + iid +
+      '" maxlength="10" placeholder="GG.MM.AAAA o AAAA" autocomplete="off" data-t="data_o_anno">';
+    if (t === "mese_anno") return '<input class="inp corto" type="text" inputmode="numeric" id="' + iid +
+      '" maxlength="7" placeholder="MM.AAAA" autocomplete="off" data-t="mese_anno">';
+    if (t === "numero" || t === "importo") {
+      var imp = t === "importo", unita = d.unita && !(imp && d.unita === "CHF") ? d.unita : "";
+      var h2 = '<div class="riga-campo"><div class="num-w">' + (imp ? '<span class="cur">CHF</span>' : "") +
+        '<input class="inp num' + (imp ? " imp" : "") + '" type="text" inputmode="decimal" id="' + iid + '" maxlength="14" autocomplete="off" data-t="' + t + '"></div>' +
+        (unita ? '<span class="unita-t">' + esc(unita) + "</span>" : "");
+      if (d.valute && d.valute.length > 1)
+        h2 += '<div class="valute" role="group" aria-label="Valuta">' + d.valute.map(function (c) {
+          return '<button type="button" data-act="valuta" data-cur="' + esc(c) + '" aria-pressed="false">' + esc(c) + "</button>";
+        }).join("") + "</div>";
+      return h2 + "</div>";
+    }
+    return "";
+  }
+  function htmlPills(d) {
+    var h = "", r = d.scelte_rapide || {};
+    Object.keys(r).forEach(function (rk) {
+      r[rk].forEach(function (o) {
+        h += '<button type="button" class="pill" data-act="rapida" data-v="' + esc(o.v) + '" data-ramo="' + esc(rk) + '" aria-pressed="false">' + esc(o.t) + "</button>";
+      });
+    });
+    if (d.non_so && d.tipo !== "elenco")
+      h += '<button type="button" class="pill" data-act="nonso" data-v="nonso" aria-pressed="false">' + esc(d.non_so) + "</button>";
+    return h ? '<div class="pills">' + h + "</div>" : "";
+  }
+  function htmlTabellaVeicolo(d) {
+    var et = d.mostra_etichette || {};
+    var rr = (d.mostra || []).filter(function (id) { return S.pre.hasOwnProperty(id); }).map(function (id) {
+      return "<tr><td>" + etichettaVeicolo(et[id] || (Q[id] && Q[id].breve) || id) + '</td><td class="n"><b>' + esc(testoVeicolo(id, S.pre[id])) + "</b></td></tr>";
+    }).join("");
+    return rr ? '<table class="veicolo"><tbody>' + rr + "</tbody></table>" : "";
+  }
+  // «Prima immatricolazione: la prima volta che…» → titolo in chiaro, spiegazione sotto
+  function etichettaVeicolo(s) {
+    var m = /^([^:(]+?)\s*(?::\s*|(?=\())(.+)$/.exec(s);
+    if (!m) return esc(s);
+    return esc(m[1]) + '<br><span class="nota">' + esc(maiuscola(m[2].replace(/^\((.*)\)$/, "$1"))) + "</span>";
+  }
+  function testoVeicolo(id, v) {
+    if (id === "potenza_kw") return fmtNum(v) + " kW (" + Math.round(Number(v) * 1.36) + " CV)";
+    if (id === "cilindrata") return fmtNum(v) + " cm³";
+    var o = trovaOpz(Q[id], v);
+    return o ? o.t : String(v);
+  }
+  function htmlElenco(d) {
+    var h = '<div class="righe">' + righe(d.id).map(function (rw, i) { return htmlRiga(d, rw, i); }).join("") + "</div>";
+    h += '<div class="el-azioni"><button type="button" class="secondario" data-act="aggiungi">+ ' + esc(d.aggiungi || "Aggiungi") + "</button>";
+    if (d.vuoto) h += '<button type="button" class="opz radio el-vuoto" data-act="vuoto" aria-pressed="false">' + esc(d.vuoto) + "</button>";
+    if (d.non_so) h += '<button type="button" class="pill el-nonso" data-act="el-nonso" aria-pressed="false">' + esc(d.non_so) + "</button>";
+    h += "</div>";
+    if (d.vuoto_disattivo_se) h += '<div class="nota vds" hidden>' + esc(d.vuoto_disattivo_se.testo) + "</div>";
+    return h;
+  }
+  function htmlRiga(d, rw, i) {
+    var ctx = { e: d.id, k: rw._k };
+    return '<div class="riga-el" data-riga="' + esc(rw._k) + '"><div class="riga-tit"><b class="riga-n">' +
+      esc((NOME_RIGA[d.id] || "Riga") + " " + (i + 1)) + '</b><button type="button" class="link" data-act="togli">Togli</button></div>' +
+      d.campi.map(function (c) { return htmlDomanda(c, ctx); }).join("") + "</div>";
+  }
+  function htmlDoc(doc) {
+    var h = '<div class="dom doc" data-doc="' + esc(doc.id) + '"><div class="dom-t"><span class="lbl" id="l_' + esc(doc.id) + '">' + esc(doc.nome) + "</span></div>";
+    if (doc.lati) h += '<div class="aiuto">' + esc(maiuscola(doc.lati)) + ".</div>";
+    if (doc.aiuto) h += '<div class="aiuto">' + esc(doc.aiuto) + "</div>";
+    if (doc.perche) h += '<div class="perche"><b>Perché:</b> ' + esc(doc.perche) + "</div>";
+    h += '<div class="ctrl"><div class="opzioni orizz" role="group" aria-labelledby="l_' + esc(doc.id) + '">' + doc.stati.map(function (s) {
+      return '<button type="button" class="opz radio" data-v="' + esc(s.v) + '" aria-pressed="false">' + esc(s.t) + "</button>";
+    }).join("") + "</div></div></div>";
+    return h;
+  }
+
+  // valori dentro i campi: solo quando il passo si disegna
+  function valoreInCampo(d, v) {
+    if (vuoto(v) || codicePill(d, v)) return "";
+    if (d.tipo === "numero" || d.tipo === "importo") return fmtNum(v);
+    return String(v);
+  }
+  function riempi(radice) {
+    (radice || app).querySelectorAll(".inp").forEach(function (inp) {
+      var x = ctxDi(inp.closest(".dom"));
+      inp.value = valoreInCampo(x.def, valOf(x));
+    });
+  }
+
+  // ── aggiornamento senza ridisegnare: visibilità, scelte, avvisi
+  function aggiorna() {
+    invalida();
+    app.querySelectorAll(".dom").forEach(function (el) {
+      var x = ctxDi(el), vis;
+      if (x.doc) vis = docVisibile(x.id);
+      else if (x.k) { var rw = riga(x.e, x.k); vis = !!rw && visRiga(rw, x.e, x.id); }
+      else vis = visibile(x.id);
+      if (el.hidden !== !vis) el.hidden = !vis;
+      if (vis) aggiornaBlocco(el, x);
+    });
+  }
+  function figli(el, sel) { return el.querySelectorAll(":scope > " + sel); }
+  function aggiornaBlocco(el, x) {
+    var d = x.def, v = valOf(x), rw = x.k ? riga(x.e, x.k) : null;
+    var chip = el.querySelector(":scope > .dom-t > .chip");
+    if (chip) chip.hidden = !(!x.k && !x.doc && S.pre.hasOwnProperty(x.id) && !S.tocc[x.id] && same(S.r[x.id], S.pre[x.id]));
+    if (d.testo_per_ramo) {
+      var lbl = el.querySelector(":scope > .dom-t > .lbl"), tt = testoPerRamo(d.testo_per_ramo) || d.testo;
+      if (lbl.textContent !== tt) lbl.textContent = tt;
+    }
+    if (d.perche_per_ramo) {
+      var pt = el.querySelector(":scope > .perche .pt"), tp = testoPerRamo(d.perche_per_ramo) || d.perche;
+      if (pt && pt.textContent !== tp) pt.textContent = tp;
+    }
+    figli(el, ".ctrl > .opzioni > .opz").forEach(function (b) {
+      var bv = b.getAttribute("data-v"), o = trovaOpz(d, bv);
+      if (o && o.visibile_se) b.hidden = !cond(o.visibile_se, rw, x.e);
+      var on = Array.isArray(v) ? v.indexOf(bv) >= 0 : v === bv;
+      if (b.getAttribute("aria-pressed") !== String(on)) b.setAttribute("aria-pressed", String(on));
+    });
+    figli(el, ".pills > .pill").forEach(function (b) {
+      var rk = b.getAttribute("data-ramo");
+      if (rk && rk !== "*") b.hidden = !ramo(rk);
+      b.setAttribute("aria-pressed", String(v === b.getAttribute("data-v")));
+    });
+    if (d.valute) {
+      var cur = valuta(x);
+      figli(el, ".ctrl > .riga-campo > .valute > button").forEach(function (b) { b.setAttribute("aria-pressed", String(b.getAttribute("data-cur") === cur)); });
+      var lc = el.querySelector(":scope > .ctrl > .riga-campo > .num-w > .cur"); if (lc) lc.textContent = cur;
+    }
+    if (d.avvisi) {
+      var box = el.querySelector(":scope > .avvisi");
+      var testi = d.avvisi.filter(function (a) { return cond(a.se, rw, x.e); }).map(function (a) { return a.testo; });
+      var chiave = testi.join("|");
+      if (box.getAttribute("data-k") !== chiave) {
+        box.setAttribute("data-k", chiave);
+        box.innerHTML = testi.map(function (t) { return '<div class="box">' + esc(t) + "</div>"; }).join("");
+      }
+    }
+    if (d.calcolo) aggiornaCalcolo(el, d, v);
+    if (d.mostra_eta) {
+      var sp = el.querySelector(":scope > .ctrl > .riga-campo > .eta"), dn = leggiData(v);
+      if (sp) sp.textContent = dn ? "(" + anni(dn.d, OGGI) + " anni)" : "";
+    }
+    if (d.precompila) {
+      var pn = el.querySelector(":scope > .precnota");
+      pn.hidden = !S.prec[x.id]; pn.textContent = S.prec[x.id] || "";
+    }
+    if (d.tipo === "elenco") {
+      var e = statoEl(x.id), n = e.righe.length;
+      var spento = !!(d.vuoto_disattivo_se && cond(d.vuoto_disattivo_se.se));
+      if (spento && e.vuoto) { e.vuoto = false; salva(); }
+      var bv2 = el.querySelector(":scope > .ctrl .el-vuoto");
+      if (bv2) { bv2.hidden = n > 0; bv2.disabled = spento; bv2.setAttribute("aria-pressed", String(!!e.vuoto && n === 0)); }
+      var vds = el.querySelector(":scope > .ctrl > .vds"); if (vds) vds.hidden = !(spento && n === 0);
+      var bn = el.querySelector(":scope > .ctrl .el-nonso"); if (bn) { bn.hidden = n > 0; bn.setAttribute("aria-pressed", String(!!e.nonso && n === 0)); }
+      figli(el, ".ctrl > .righe > .riga-el > .riga-tit > .riga-n").forEach(function (b, i) { b.textContent = (NOME_RIGA[x.id] || "Riga") + " " + (i + 1); });
+    }
+  }
+  function aggiornaCalcolo(el, d, v) {
+    var out = el.querySelector(":scope > .calcolo"), html = "";
+    var km = Number(V("contachilometri")), pi = leggiData(V("prima_immatricolazione"));
+    if (isFinite(km) && km > 0 && pi) {
+      var eta = (OGGI - pi.d) / (365.25 * 864e5);
+      if (eta >= 1) {
+        var media = Math.round(km / eta / 100) * 100;
+        html = "<p>" + esc(d.calcolo.mostra.replace("{media}", fmtNum(media))) + "</p>";
+        var lim = { "5000": 5000, "10000": 10000, "15000": 15000 }[v];
+        if (lim && lim < media && d.calcolo.avviso_se_sotto) html += '<p class="attenzione">' + esc(d.calcolo.avviso_se_sotto) + "</p>";
+      }
+    }
+    out.hidden = !html;
+    if (out.innerHTML !== html) out.innerHTML = html;
+  }
+
+  // ── conferma di un campo (al blur o al cambio di passo)
+  var giu = false, inAttesa = false;            // un tocco che sposta il fuoco non deve far saltare la pagina sotto il dito
+  document.addEventListener("pointerdown", function () { giu = true; }, true);
+  function rilascia() { giu = false; if (inAttesa) { inAttesa = false; setTimeout(aggiorna, 60); } }
+  document.addEventListener("pointerup", rilascia, true);
+  document.addEventListener("pointercancel", rilascia, true);
+  function aggiornaPresto() { if (giu) inAttesa = true; else aggiorna(); }
+  function mostraErr(el, testo, inp) {
+    var e = el.querySelector(":scope > .err");
+    if (e) { e.textContent = testo || ""; e.hidden = !testo; }
+    if (inp) inp.classList.toggle("sbagliato", !!testo);
+  }
+  function conferma(inp) {
+    var el = inp.closest(".dom"); if (!el) return;
+    var x = ctxDi(el), d = x.def, t = d.tipo, s = inp.value.trim(), cur = valOf(x), val, err = "";
+    if (s === "") {
+      if (codicePill(d, cur)) { mostraErr(el, "", inp); return; }   // «Non lo so» o scelta rapida: resta quella
+      val = undefined;
+    } else if (t === "numero" || t === "importo") {
+      val = norm(s);
+      if (val === null) { err = "Non riesco a leggere questo numero: scrivi solo le cifre, per esempio 12'500."; val = undefined; }
+      else inp.value = fmtNum(val);
+    } else if (t === "data") {
+      var dd = leggiData(s);
+      if (!dd) err = "Scrivi la data come GG.MM.AAAA, per esempio 05.03.2024.";
+      else { val = dd.testo; inp.value = val; }
+    } else if (t === "data_o_anno") {
+      val = leggiDataOAnno(s);
+      if (!val) { err = "Scrivi la data come GG.MM.AAAA, oppure solo l'anno, per esempio 2023."; val = undefined; }
+      else inp.value = val;
+    } else if (t === "mese_anno") {
+      val = leggiMeseAnno(s);
+      if (!val) { err = "Scrivi mese e anno come MM.AAAA, per esempio 03.2024."; val = undefined; }
+      else inp.value = val;
+    } else {
+      val = s;
+      if (t === "email" && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(s)) err = "Controlla l'indirizzo e-mail: sembra incompleto.";
+    }
+    mostraErr(el, err, inp);
+    if (same(cur, val)) return;
+    setVal(x, val);
+    invalida(); aggiornaPresto(); salva();
+  }
+  function raccogli() {
+    app.querySelectorAll(".inp").forEach(function (inp) { if (inp.closest(".dom")) conferma(inp); });
+    app.querySelectorAll(".inp-x").forEach(function (inp) { S[inp.getAttribute("data-campo")] = inp.value.trim(); });
+  }
+
+  // ── eventi (delegati: la pagina non si ridisegna mentre si risponde)
+  app.addEventListener("input", function (e) {
+    var inp = e.target;
+    if (!inp.classList || !inp.classList.contains("inp")) return;
+    if (inp.getAttribute("data-t") === "data" && inp.selectionStart === inp.value.length) {
+      var f = dataDalVivo(inp.value);
+      if (f !== inp.value) inp.value = f;
+    }
+    var el = inp.closest(".dom");
+    if (el && el.querySelector(":scope > .err:not([hidden])")) mostraErr(el, "", inp);
+  });
+  app.addEventListener("focusout", function (e) {
+    var inp = e.target;
+    if (!inp.classList) return;
+    if (inp.classList.contains("inp")) conferma(inp);
+    else if (inp.classList.contains("inp-x")) {
+      S[inp.getAttribute("data-campo")] = inp.value.trim(); salva();
+      if (S.schermo === "riepilogo") aggiornaJson();
+    }
+  });
+  app.addEventListener("keydown", function (e) {
+    var inp = e.target;
+    if (e.key !== "Enter" || inp.tagName !== "INPUT") return;
+    e.preventDefault();
+    var tutti = Array.prototype.slice.call(app.querySelectorAll("input")).filter(function (x) { return x.offsetParent !== null; });
+    var i = tutti.indexOf(inp);
+    if (i >= 0 && i < tutti.length - 1) tutti[i + 1].focus(); else inp.blur();
+  });
+  app.addEventListener("click", function (e) {
+    var b = e.target.closest("button, a[data-vai]");
+    if (!b || !app.contains(b)) return;
+    if (b.hasAttribute("data-vai")) { e.preventDefault(); mostra(b.getAttribute("data-vai"), true); return; }
+    var act = b.getAttribute("data-act"), el = b.closest(".dom");
+    if (!el) return;
+    var x = ctxDi(el), d = x.def;
+    if (act === "aggiungi") { aggiungiRiga(el, x.id); return; }
+    if (act === "togli") { togliRiga(el, x.id, b.closest(".riga-el").getAttribute("data-riga")); return; }
+    if (act === "vuoto" || act === "el-nonso") {
+      var e1 = statoEl(x.id);
+      if (e1.righe.length || b.disabled) return;
+      if (act === "vuoto") { e1.vuoto = !e1.vuoto; e1.nonso = false; } else { e1.nonso = !e1.nonso; e1.vuoto = false; }
+      invalida(); aggiorna(); salva(); return;
+    }
+    if (act === "valuta") {
+      var c = b.getAttribute("data-cur");
+      if (x.k) { var rw = riga(x.e, x.k); if (c === "EUR") rw[x.id + "_valuta"] = "EUR"; else delete rw[x.id + "_valuta"]; }
+      else { if (c === "EUR") S.val[x.id] = "EUR"; else delete S.val[x.id]; }
+      aggiorna(); salva(); return;
+    }
+    var cur = valOf(x), bv = b.getAttribute("data-v");
+    if (act === "nonso" || act === "rapida") {
+      var nuovo = cur === bv ? undefined : bv;
+      setVal(x, nuovo);
+      if (nuovo !== undefined) {
+        var inp = d.tipo === "elenco" ? null : el.querySelector(":scope > .ctrl .inp");
+        if (inp) { inp.value = ""; mostraErr(el, "", inp); }
+      }
+    } else if (b.classList.contains("opz")) {
+      if (x.doc || d.tipo !== "scelta_multipla") {
+        if (cur !== bv) setVal(x, bv);
+      } else {
+        var arr = Array.isArray(cur) ? cur.slice() : [], o = trovaOpz(d, bv), i = arr.indexOf(bv);
+        if (i >= 0) arr.splice(i, 1);
+        else if (o && o.esclusiva) arr = [bv];
+        else {
+          arr = arr.filter(function (y) { var oy = trovaOpz(d, y); return !(oy && oy.esclusiva); });
+          arr.push(bv);
+        }
+        setVal(x, arr.length ? arr : undefined);
+      }
+    } else return;
+    invalida(); aggiorna(); salva();
+  });
+  function aggiungiRiga(el, eid) {
+    var d = EL[eid], e = statoEl(eid);
+    e.seq = (e.seq | 0) + 1;
+    var rw = { _k: (eid === "conducenti" ? "c" : "r") + e.seq };
+    e.righe.push(rw); e.vuoto = false; e.nonso = false;
+    var cont = el.querySelector(":scope > .ctrl > .righe");
+    cont.insertAdjacentHTML("beforeend", htmlRiga(d, rw, e.righe.length - 1));
+    var nuova = cont.lastElementChild;
+    riempi(nuova); invalida(); aggiorna(); salva();
+    try { nuova.scrollIntoView({ behavior: "smooth", block: "start" }); } catch (er) { nuova.scrollIntoView(); }
+  }
+  function togliRiga(el, eid, k) {
+    var e = statoEl(eid), rw = riga(eid, k);
+    var pieno = rw && Object.keys(rw).some(function (c) { return c !== "_k" && !vuoto(rw[c]); });
+    if (pieno && !confirm("Togliere questa riga con le sue risposte?")) return;
+    e.righe = e.righe.filter(function (r) { return r._k !== k; });
+    var div = el.querySelector(':scope > .ctrl > .righe > .riga-el[data-riga="' + k + '"]');
+    if (div) div.remove();
+    invalida(); aggiorna(); salva();
+  }
+
+  // ── navigazione
+  function mostra(sc, focus) {
+    raccogli();
+    if (sc !== "intro" && sc !== "riepilogo" && !PASSO[sc]) sc = "intro";
+    S.schermo = sc;
+    invalida();
+    if (sc === "intro") renderIntro();
+    else if (sc === "riepilogo") renderRiepilogo();
+    else renderPasso(PASSO[sc]);
+    var l = schermi(), i = l.indexOf(sc), passi = l.length - 2;
+    document.getElementById("avanz").style.width = (i > 0 ? Math.round(i / (l.length - 1) * 100) : 0) + "%";
+    var ind = document.getElementById("indietro"), av = document.getElementById("avanti");
+    ind.classList.toggle("invisibile", sc === "intro");
+    av.classList.toggle("invisibile", sc === "riepilogo");
+    av.textContent = sc === "intro" ? "Cominciamo →" : (l[i + 1] === "riepilogo" ? "Rivedi →" : "Avanti →");
+    document.getElementById("passo").textContent = sc === "intro" ? "" : sc === "riepilogo" ? "Riepilogo" : "Passo " + i + " di " + passi;
+    salvaSubito();
+    window.scrollTo(0, 0);
+    if (focus) app.focus({ preventScroll: true });
+  }
+
+  function liTesto(it) {
+    if (typeof it === "string") return "<li>" + esc(it) + "</li>";
+    if (it.se && !cond(it.se)) return "";
+    return "<li>" + esc(it.testo) + (it.punti ? "<ul>" + it.punti.map(function (p) { return "<li>" + esc(p) + "</li>"; }).join("") + "</ul>" : "") + "</li>";
+  }
+  function renderIntro() {
+    var I = B.introduzione;
+    var h = "<h1>" + esc(TITOLO) + "</h1>" +
+      '<p class="sotto">' + esc(I.sottotitolo.replace("{minuti}", minutiStimati())) + "</p>";
+    if (ripreso) h += '<div class="box">Le risposte che hai già dato sono salvate su questo dispositivo: puoi riprendere da qui. ' +
+      '<button class="link" type="button" id="dacapo">Ricomincia da capo</button></div>';
+    h += "<h3>Cosa succede</h3><ul class=\"punti\">" + I.cosa_succede.map(liTesto).join("") + "</ul>";
+    h += "<h3>Come funziona</h3><ul class=\"punti\">" + I.come_funziona.map(liTesto).join("") + "</ul>";
+    var gia = Object.keys(SALTA).map(function (id) { return Q[id] ? Q[id].breve : (DOC[id] ? DOC[id].nome : null); }).filter(Boolean);
+    if (gia.length) h += '<div class="box oro">' + esc(I.gia_note) + "<ul>" + gia.map(function (t) { return "<li>" + esc(t) + "</li>"; }).join("") + "</ul></div>";
+    h += '<div class="box privacy"><div class="tit">' + esc(I.privacy.titolo) + "</div><ul>" + I.privacy.punti.map(liTesto).join("") + "</ul></div>";
+    h += '<label class="campo" for="nome">' + esc(I.nome.testo) + "</label>" +
+      '<input class="inp-x" id="nome" data-campo="nome" autocomplete="name" maxlength="80" placeholder="Nome e cognome" value="' + esc(S.nome) + '">' +
+      (I.nome.perche ? '<p class="nota" style="margin-top:6px">' + esc(I.nome.perche) + "</p>" : "");
+    app.innerHTML = h;
+    var dc = document.getElementById("dacapo");
+    if (dc) dc.addEventListener("click", function () {
+      if (!confirm("Cancellare tutte le risposte date finora e ricominciare?")) return;
+      S = applicaPre(statoVuoto()); S.salta = Object.keys(SALTA); ripreso = false;
+      app.innerHTML = "";                         // niente da raccogliere dalla pagina vecchia
+      invalida(); salvaSubito(); mostra("intro");
+    });
+  }
+  function precompilaPasso(p) {
+    p.domande.forEach(function (d) {
+      if (!d.precompila || !vuoto(S.r[d.id]) || !visibile(d.id)) return;
+      for (var i = 0; i < d.precompila.length; i++) {
+        var a = d.precompila[i];
+        if (cond(a.se)) { S.r[d.id] = a.valore; S.prec[d.id] = a.nota; invalida(); break; }
+      }
+    });
+  }
+  function renderPasso(p) {
+    precompilaPasso(p);
+    var h = "<h2>" + esc(p.titolo) + "</h2>" + (p.sottotitolo ? '<p class="sotto">' + esc(p.sottotitolo) + "</p>" : "");
+    if (p.nota) h += '<div class="box">' + esc(p.nota) + "</div>";
+    if (p.tutto_no) h += '<p><button type="button" class="secondario largo" id="tuttono">' + esc(p.tutto_no.testo) + "</button></p>";
+    if (p.documenti) {
+      h += '<ul class="punti">' + (p.istruzioni || []).map(function (t) { return "<li>" + esc(t) + "</li>"; }).join("") + "</ul>";
+      h += p.documenti.filter(function (id) { return DOC[id] && !SALTA[id]; }).map(function (id) { return htmlDoc(DOC[id]); }).join("");
+    } else {
+      h += p.domande.filter(function (d) { return !SALTA[d.id] && !(d.visibile_se && d.visibile_se.mai); })
+        .map(function (d) { return htmlDomanda(d, null); }).join("");
+    }
+    app.innerHTML = h;
+    riempi(); aggiorna();
+    var tn = document.getElementById("tuttono");
+    if (tn) tn.addEventListener("click", function () {
+      raccogli();
+      var ids = p.tutto_no.imposta, pieni = ids.filter(function (id) { return righe(id).length; });
+      if (pieni.length && !confirm("Togliere le righe che hai già aggiunto in questo passo?")) return;
+      ids.forEach(function (id) { var e = statoEl(id); e.righe = []; e.vuoto = true; e.nonso = false; });
+      salvaSubito(); mostra(p.id);
+    });
+  }
+
+  // ── riepilogo
+  function numerico(d) { return ["numero", "importo", "data", "data_o_anno", "mese_anno"].indexOf(d.tipo) >= 0; }
+  function testoRisposta(d, v, cur) {
+    if (v === "nonso") return d.non_so || "Non lo so";
+    var r = rapida(d, v); if (r) return r.t;
+    if (Array.isArray(v)) return v.map(function (y) { var o = trovaOpz(d, y); return o ? o.t : y; });
+    if (typeof v === "string" && v.indexOf("cond:") === 0) return nomeConducente(v.slice(5));
+    var o2 = trovaOpz(d, v); if (o2) return o2.t;
+    if (d.tipo === "numero") return fmtNum(v) + (d.unita ? " " + d.unita : "");
+    if (d.tipo === "importo") return (cur || "CHF") + " " + fmtNum(v) + (d.unita && d.unita !== "CHF" ? " " + d.unita : "");
+    if (d.tipo === "data" && d.mostra_eta) { var dn = leggiData(v); if (dn) return v + " (" + anni(dn.d, OGGI) + " anni)"; }
+    return String(v);
+  }
+  function htmlRisposta(d, v, cur) {
+    var t = testoRisposta(d, v, cur);
+    if (Array.isArray(t)) return '<ul class="vl">' + t.map(function (y) { return "<li>" + esc(y) + "</li>"; }).join("") + "</ul>";
+    return esc(t).replace(/\n/g, "<br>");
+  }
+  function riepElenco(d) {
+    var e = statoEl(d.id), l = e.righe;
+    if (!l.length) {
+      if (e.vuoto && d.vuoto) return "<tr><td>" + esc(d.breve) + "</td><td>" + esc(d.vuoto) + "</td></tr>";
+      if (e.nonso && d.non_so) return "<tr><td>" + esc(d.breve) + "</td><td>" + esc(d.non_so) + "</td></tr>";
+      return "";
+    }
+    return l.map(function (rw, i) {
+      var campi = Object.keys(ELC[d.id]).map(function (cid) {
+        var w = VR(rw, d.id, cid); if (vuoto(w)) return "";
+        var c = ELC[d.id][cid].def;
+        return '<div class="kv"><span class="k">' + esc(c.testo) + "</span><br>" +
+          htmlRisposta(c, w, rw[cid + "_valuta"] === "EUR" ? "EUR" : "CHF") + "</div>";
+      }).join("");
+      return '<tr><td colspan="2"><b>' + esc((NOME_RIGA[d.id] || "Riga") + " " + (i + 1)) + '</b><div class="kvs">' + (campi || '<span class="nota">Riga vuota</span>') + "</div></td></tr>";
+    }).join("");
+  }
+  function elencoRisposto(id) { var e = statoEl(id); return e.righe.length > 0 || e.vuoto || e.nonso; }
+  function modificate() { return Object.keys(S.pre).filter(function (id) { return !same(S.r[id], S.pre[id]); }); }
+
+  function renderRiepilogo() {
+    invalida();
+    var R = B.riepilogo, mancano = [];
+    var h = "<h1>" + esc(R.titolo) + '</h1><p class="sotto">' + esc(R.sottotitolo) + "</p>";
+    var np = Object.keys(S.pre).length;
+    if (np) {
+      var nm = modificate().length;
+      h += '<div class="box">' + (nm ? "Dei dati che avevo letto dai tuoi documenti ne hai " + (nm === 1 ? "corretto <b>uno</b>." : "corretti <b>" + nm + "</b>.")
+        : "Dei dati che avevo letto dai tuoi documenti non ne hai corretto nessuno.") + "</div>";
+    }
+    schermi().forEach(function (sc) {
+      var p = PASSO[sc]; if (!p || p.documenti) return;
+      var corpo = "";
+      p.domande.forEach(function (d) {
+        if (!visibile(d.id)) return;
+        if (d.tipo === "elenco") {
+          corpo += riepElenco(d);
+          if (d.importante && !elencoRisposto(d.id)) mancano.push({ t: d.breve, p: p.id });
+          return;
+        }
+        var v = V(d.id);
+        if (d.tipo === "conferma_veicolo") corpo += '<tr><td colspan="2">' + htmlTabellaVeicolo(d) + "</td></tr>";
+        if (vuoto(v)) { if (d.importante) mancano.push({ t: d.breve, p: p.id }); }
+        else corpo += "<tr><td>" + esc(d.breve) + '</td><td class="' + (numerico(d) && !codicePill(d, v) ? "n" : "") + '">' + htmlRisposta(d, v, S.val[d.id]) + "</td></tr>";
+        Object.keys(SUB).forEach(function (sid) {
+          if (!discende(sid, d.id) || !visibile(sid)) return;
+          var w = V(sid), c = SUB[sid].def; if (vuoto(w)) return;
+          corpo += '<tr class="sub"><td>' + esc(c.testo) + '</td><td class="' + (numerico(c) && !codicePill(c, w) ? "n" : "") + '">' + htmlRisposta(c, w, S.val[sid]) + "</td></tr>";
+        });
+      });
+      if (corpo) h += '<div class="cat-tit"><b>' + esc(p.titolo) + '</b><a href="#" data-vai="' + esc(p.id) + '">modifica</a></div>' +
+        "<table><tbody>" + corpo + "</tbody></table>";
+    });
+    var dv = docVisibili();
+    if (dv.length) {
+      h += '<div class="cat-tit"><b>' + esc(PASSO.documenti.titolo) + '</b><a href="#" data-vai="documenti">modifica</a></div><table><tbody>' +
+        dv.map(function (id) {
+          var st = S.doc[id], o = st ? trovaOpz({ opzioni: DOC[id].stati }, st) : null;
+          return "<tr><td>" + esc(DOC[id].nome) + '</td><td class="n">' + (o ? esc(o.t) : '<span class="nota">Non indicato</span>') + "</td></tr>";
+        }).join("") + "</tbody></table>";
+    }
+    if (mancano.length) {
+      h += '<div class="box oro"><div class="tit">Senza risposta</div><ul>' + mancano.map(function (m) {
+        return '<li><a href="#" data-vai="' + esc(m.p) + '">' + esc(m.t) + "</a></li>";
+      }).join("") + "</ul><p>Va bene così se non le sai: te le chiedo a voce.</p></div>";
+    }
+    var nf = R.nota_finale;
+    h += '<label class="campo" for="nota">' + esc(nf.testo) + "</label>" +
+      '<textarea class="inp-x" id="nota" data-campo="nota" rows="3" maxlength="1500"></textarea>';
+    h += "<h2>Manda le risposte a Giorgio</h2>" +
+      '<div class="box privacy"><div class="tit">Prima di inviare</div><ul>' + RIT.prima_di_inviare.map(liTesto).join("") + "</ul></div>";
+    if (!S.nome) h += '<label class="campo" for="nome2">' + esc(B.introduzione.nome.testo) + '</label><input class="inp-x" id="nome2" data-campo="nome" maxlength="80" placeholder="Nome e cognome">';
+    h += '<div class="azioni">' + RIT.pulsanti.map(function (b) {
+      return '<button type="button" class="' + (b.principale ? "primario" : "secondario") + '" id="inv_' + esc(b.id) + '">' + esc(b.testo) + "</button>";
+    }).join("") + '</div><p class="esito" id="esito" aria-live="polite"></p>' +
+      '<p class="nota">Se nessun pulsante apre l\'app, tocca «Copia i dati» e incollali in un messaggio a Giorgio, su WhatsApp (' +
+      esc(RIT.whatsapp_leggibile) + ") o per e-mail (" + esc(RIT.email) + ").</p>" +
+      '<details><summary>Vedi i dati che invii</summary><pre id="json"></pre></details>' +
+      '<p><button class="link" type="button" id="cancella">' + esc(RIT.cancella) + "</button></p>";
+    app.innerHTML = h;
+    document.getElementById("nota").value = S.nota || "";
+    aggiornaJson();
+    var esito = document.getElementById("esito");
+    function su(id, fn) { var b = document.getElementById("inv_" + id); if (b) b.addEventListener("click", function () { raccogli(); salvaSubito(); aggiornaJson(); fn(); }); }
+    su("whatsapp", function () {
+      var url = "https://wa.me/" + RIT.whatsapp + "?text=" + encodeURIComponent(messaggio());
+      var w = window.open(url, "_blank", "noopener"); if (!w) location.href = url;
+      esito.textContent = RIT.esiti.whatsapp;
+    });
+    su("email", function () {
+      var sogg = "Assicurazione auto" + (S.nome ? " - " + S.nome : "");
+      location.href = "mailto:" + RIT.email + "?subject=" + encodeURIComponent(sogg) + "&body=" + encodeURIComponent(messaggio() + "\n");
+      esito.textContent = RIT.esiti.email;
+    });
+    su("copia", function () {
+      var t = messaggio();
+      function ok() { esito.textContent = RIT.esiti.copia; }
+      function ko() { esito.textContent = "Copia non riuscita: apri «Vedi i dati che invii» e copiali a mano."; }
+      if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(t).then(ok, function () { if (copiaVecchia(t)) ok(); else ko(); });
+      else if (copiaVecchia(t)) ok(); else ko();
+    });
+    su("scarica", function () {
+      var dati = datiDaInviare(), oggi = new Date();
+      var nomeFile = "rcauto-" + oggi.getFullYear() + "-" + pad2(oggi.getMonth() + 1) + "-" + pad2(oggi.getDate()) + ".json";
+      var url = URL.createObjectURL(new Blob([JSON.stringify(dati, null, 1)], { type: "application/json" }));
+      var a = document.createElement("a"); a.href = url; a.download = nomeFile;
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
+      esito.textContent = RIT.esiti.scarica;
+    });
+    document.getElementById("cancella").addEventListener("click", function () {
+      if (!confirm("Cancellare le tue risposte da questo dispositivo? Quelle già inviate a Giorgio restano a lui.")) return;
+      try { localStorage.removeItem(CHIAVE); } catch (e) {}
+      S = applicaPre(statoVuoto()); S.salta = Object.keys(SALTA); ripreso = false;
+      app.innerHTML = "";                         // niente da raccogliere dalla pagina vecchia
+      invalida(); mostra("intro");
+    });
+  }
+  function discende(sid, qid) {
+    var p = SUB[sid] && SUB[sid].padre, n = 0;
+    while (p && n++ < 10) { if (p === qid) return true; p = SUB[p] ? SUB[p].padre : null; }
+    return false;
+  }
+
+  // ── il messaggio per Giorgio: una riga leggibile, le foto promesse, poi il JSON
+  function datiDaInviare() {
+    invalida();
+    var r = {}, nonso = [];
+    function metti(id, d, v) {
+      r[id] = v;
+      if (v === "nonso") nonso.push(id);
+      else if (d.valute && S.val[id] === "EUR") r[id + "_valuta"] = "EUR";
+    }
+    B.passi.forEach(function (p) {
+      p.domande.forEach(function (d) {
+        if (d.tipo === "elenco") return;
+        var v = V(d.id); if (!vuoto(v)) metti(d.id, d, v);
+        Object.keys(SUB).forEach(function (sid) {
+          if (!discende(sid, d.id)) return;
+          var w = V(sid); if (!vuoto(w)) metti(sid, SUB[sid].def, w);
+        });
+      });
+    });
+    function elenco(eid) {
+      if (!visibile(eid)) return undefined;
+      var e = statoEl(eid);
+      if (!e.righe.length) {
+        if (e.nonso) { nonso.push(eid); return null; }
+        return e.vuoto ? [] : null;
+      }
+      return e.righe.map(function (rw, i) {
+        var o = {};
+        if (eid === "conducenti") o.rif = rw._k;
+        Object.keys(ELC[eid]).forEach(function (cid) {
+          var w = VR(rw, eid, cid); if (vuoto(w)) return;
+          o[cid] = w;
+          if (w === "nonso") nonso.push(eid + "." + (i + 1) + "." + cid);
+          else if (rw[cid + "_valuta"] === "EUR") o[cid + "_valuta"] = "EUR";
+          if (typeof w === "string" && w.indexOf("cond:") === 0) o[cid + "_nome"] = nomeConducente(w.slice(5));
+        });
+        return o;
+      });
+    }
+    var docs = {}, mando = [];
+    docVisibili().forEach(function (id) {
+      if (!S.doc[id]) return;
+      docs[id] = S.doc[id];
+      if (S.doc[id] === "mando") mando.push(id);
+    });
+    var ora = new Date();
+    var out = {
+      tipo: "svag-rcauto-wizard", versione: VERSIONE, banca: B.banca + " " + B.versione_banca,
+      creato: dataTesto(ora) + " " + pad2(ora.getHours()) + ":" + pad2(ora.getMinutes()),
+      nome: S.nome || "",
+      risposte: r
+    };
+    var cond0 = elenco("conducenti"), sin0 = elenco("sinistri");
+    out.conducenti = cond0 === undefined ? null : cond0;
+    out.sinistri = sin0 === undefined ? null : sin0;
+    ["altri_veicoli", "ritiro_licenza", "proposta_rifiutata"].forEach(function (k) { var x = elenco(k); if (x !== undefined) out[k] = x; });
+    out.precompilato = Object.keys(S.pre);
+    out.modificate = modificate();
+    out.non_so = nonso;
+    out.documenti_da_mandare = mando;
+    out.documenti = docs;
+    out.saltate = Object.keys(SALTA);
+    out.rami = B.rami.filter(function (x) { return ramo(x.id); }).map(function (x) { return x.id; });
+    if (S.nota) out.nota_finale = S.nota;
+    return out;
+  }
+  function messaggio() {
+    var d = datiDaInviare();
+    var l = ["Ciao Giorgio, ecco le risposte per l'assicurazione dell'auto" + (S.nome ? " (" + S.nome + ")" : "") +
+             ", compilate il " + dataTesto(new Date()) + "."];
+    if (d.documenti_da_mandare.length) {
+      l.push("Ti mando queste foto:");
+      d.documenti_da_mandare.forEach(function (id) { l.push("- " + DOC[id].nome); });
+    }
+    l.push("Il testo qui sotto serve al tuo programma ed è giusto così: va mandato com'è.");
+    return l.join("\n") + "\n\n" + JSON.stringify(d);
+  }
+  function aggiornaJson() {
+    var pre = document.getElementById("json");
+    if (pre) pre.textContent = messaggio();
+  }
+  function copiaVecchia(t) {
+    var ta = document.createElement("textarea");
+    ta.value = t; ta.setAttribute("readonly", ""); ta.style.position = "fixed"; ta.style.opacity = "0";
+    document.body.appendChild(ta); ta.select();
+    var ok = false; try { ok = document.execCommand("copy"); } catch (e) {}
+    ta.remove(); return ok;
+  }
+
+  // ── chi chiude la pagina subito dopo l'ultima risposta non deve perderla
+  window.addEventListener("pagehide", function () { raccogli(); salvaSubito(); });
+  document.addEventListener("visibilitychange", function () { if (document.visibilityState === "hidden") { raccogli(); salvaSubito(); } });
+  document.getElementById("indietro").addEventListener("click", function () { raccogli(); mostra(vicino(-1), true); });
+  document.getElementById("avanti").addEventListener("click", function () { raccogli(); mostra(vicino(1), true); });
+  window.SVAG_RCAUTO_PAGINA = { versione: VERSIONE, dati: datiDaInviare, messaggio: messaggio };   // per il collaudo
+  mostra(S.schermo);
+})();
+</script>
+</body>
+</html>

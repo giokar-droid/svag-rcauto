@@ -1,0 +1,149 @@
+# La tua auto: i dati per l'assicurazione — wizard RC auto SVAG
+
+Versione **1.0** dell'11.10.2026. Copia **locale**: nessun repository remoto, nessun push.
+Si pubblica solo quando Giorgio lo decide.
+
+Pagina statica che il cliente apre dal telefono, come il wizard del budget (v1.5): risponde
+alle domande che servono a chiedere i preventivi RC (responsabilità civile) auto a Generali,
+Helvetia e Zurich alla pari, e alla fine manda tutto a Giorgio su WhatsApp. Le foto dei
+documenti le manda nella stessa chat: il messaggio elenca quelle promesse.
+
+## I file
+
+| File | Cosa fa |
+|---|---|
+| `index.html` | La pagina: grafica, passi, condizioni, riepilogo, invio. Non contiene domande |
+| `domande.js` | La parte per il cliente della banca domande. **Generato**: non si modifica a mano |
+| `build.py` | Genera `domande.js` dalla banca `rcauto_domande_v1.json` e fa i controlli |
+| `link.py` | Compone il link personale con `#pre` e `#salta`, e rifiuta quello che non ci deve stare |
+| `.nojekyll` | Per GitHub Pages, il giorno in cui si pubblica |
+
+La banca sta in `RESOURCES/SVAG/TOOL/RC AUTO WIZARD/rcauto_domande_v1.json` (Dropbox) e la
+genera `_lavoro/genera_domande.py`. Una domanda si corregge lì, si rigenera la banca e poi:
+
+```bash
+python3 build.py            # rigenera domande.js
+python3 build.py --controlla  # solo i controlli
+```
+
+`build.py` copia nella pagina solo introduzione, rami, passi, documenti, riepilogo, ritorno e
+le chiavi ammesse di `#pre` e `#salta`. Toglie le note interne (`per_giorgio`, `porta_a`,
+`inventario`, il valore «garage» delle opzioni, le formule). Si ferma se trova:
+
+- un nome di un caso reale (l'elenco lo legge dal generatore della banca, non sta qui);
+- un punto centrale «·» in un testo;
+- una condizione che punta a una domanda, un ramo o un elenco che non esiste;
+- nel `#pre` un dato personale o una dichiarazione del cliente.
+
+## Il link personale
+
+Tutto quello che sta dopo `#` resta nel browser: il sito che ospita la pagina non lo riceve.
+
+- `#pre=` porta i dati del veicolo letti dai documenti, in base64url. La pagina accetta:
+  - il JSON compatto della banca, `{"marca":"Fiat","modello_versione":"Panda",…}` (consigliato);
+  - il formato del budget, `marca=Fiat;modello_versione=Panda;…` (solo valori senza `;` e `=`).
+- `#salta=` porta solo nomi di domande o di documenti già noti, separati da virgole.
+- Le due parti si uniscono con `&`: `…/#pre=…&salta=doc_permesso_io,cellulare`.
+
+Mai nel link: nomi di persona, nascite, indirizzi, telefono, e-mail, nazionalità, permesso,
+targa, telaio, matricola, IBAN. Mai le dichiarazioni del cliente: chilometri, garage, uso,
+viaggi, dove sta l'auto, preferenze, officina, pagamento. La pagina ignora ogni chiave fuori
+dall'elenco ammesso e ogni valore che non è un'opzione valida; `link.py` le rifiuta prima.
+
+```bash
+python3 link.py marca=Fiat modello_versione=Panda prima_immatricolazione=12.06.2019 \
+  potenza_kw=51 cilindrata=1242 carburante=benzina cambio=manuale posti=5 provenienza=cambio \
+  --salta doc_permesso_io,doc_patente_io,cellulare,email
+```
+
+Senza `--base` il link punta alla prova locale (`http://localhost:8776/`).
+
+Il link contiene dati dell'auto del cliente: si manda solo a lui, per un canale privato.
+Riaperto uguale riprende le risposte; un `#pre` diverso riparte da capo (tiene solo il nome).
+
+## Come funziona la pagina
+
+- Prima schermata: tempo stimato, cosa succede, come funziona, cosa non si chiede (`#salta`),
+  informativa sui dati, nome.
+- Poi i passi della banca (16 o 17, secondo i rami), con barra di avanzamento, «Indietro»,
+  «Avanti». Un passo senza domande visibili non compare (per esempio «La dogana»).
+- Le domande che dipendono da una risposta compaiono al tocco, senza ridisegnare la pagina.
+  Mentre si digita non succede niente: il valore si salva quando si lascia il campo o si
+  cambia passo.
+- «Non lo so» e le scelte rapide sono pulsanti accanto al campo.
+- Date in testo `GG.MM.AAAA` con i punti messi in automatico, mai il campo data del browser.
+  Danni, ritiri e rifiuti accettano anche solo l'anno. «Da quando la usi» è `MM.AAAA`.
+- Numeri e importi in testo: `12'500`, `12 500`, `12.500` vanno bene; si vedono come `12'500`.
+  Accanto agli importi che possono essere in euro, i pulsanti CHF ed EUR.
+- Le schede ripetibili (conducenti, altre auto, danni, ritiri, rifiuti) hanno «Aggiungi»,
+  «Togli» e la risposta «nessuno». Nel passo dei danni c'è «Nessuna di queste tre cose».
+- I valori arrivati dal `#pre` portano l'etichetta «dai tuoi documenti» finché il cliente non
+  li tocca; i dati del veicolo stanno in una tabella da confermare.
+- Le risposte restano nel browser (`localStorage`, chiave `svag-rcauto-wizard-v1`, con
+  try/catch): chi chiude la pagina riprende da dove era. «Cancella» toglie solo questa chiave.
+- Testo mai sotto 15 px, niente risorse da fuori (font, CDN, statistiche), niente cookie.
+
+## Il ritorno
+
+Il pulsante principale apre WhatsApp verso Giorgio (+41 78 871 69 00) con il messaggio già
+scritto. Le alternative sono e-mail (giorgio.carrara@svag.ch), «Copia i dati» e «Scarica il
+file»; «Copia» e «Scarica» non mandano niente. Il messaggio è fatto così:
+
+```
+Ciao Giorgio, ecco le risposte per l'assicurazione dell'auto (Nome), compilate il GG.MM.AAAA.
+Ti mando queste foto:
+- <documento segnato «Te lo mando»>
+Il testo qui sotto serve al tuo programma ed è giusto così: va mandato com'è.
+
+{…JSON…}
+```
+
+| Chiave | Cosa contiene |
+|---|---|
+| `tipo`, `versione`, `banca` | `svag-rcauto-wizard`, versione della pagina, banca e sua versione |
+| `creato` | `GG.MM.AAAA hh:mm` della compilazione |
+| `nome` | come l'ha scritto il cliente |
+| `risposte` | `{id: valore}` con gli id della banca, sottodomande comprese. Scelta = codice; scelta multipla = elenco di codici; numeri senza apostrofi; importo in euro = anche `{id}_valuta: "EUR"`; date `GG.MM.AAAA`; mese e anno `MM.AAAA`; «Non lo so» = `nonso`; scelta rapida = il suo codice. Ci sono anche i valori del `#pre`, confermati o no |
+| `conducenti`, `sinistri` | una riga per persona o per danno; `[]` = «nessuno» confermato; `null` = senza risposta. Ogni conducente ha `rif` (`c1`, `c2`…); nei danni `chi: "cond:c1"` più `chi_nome` |
+| `altri_veicoli`, `ritiro_licenza`, `proposta_rifiutata` | come sopra, solo se la domanda era visibile |
+| `precompilato` | id arrivati dal `#pre` |
+| `modificate` | quelli che il cliente ha cambiato |
+| `non_so` | id con «Non lo so»; per le righe `elenco.N.campo` |
+| `documenti_da_mandare` | documenti segnati «Te lo mando» |
+| `documenti` | `{id: mando, dopo, non_ho, non_so}` per i documenti visibili |
+| `saltate` | id tolti con `#salta` |
+| `rami` | rami attivi all'invio (import, leasing, giovani, licenza_estera…) |
+| `nota_finale` | testo libero, se c'è |
+
+Rispetto al formato scritto nel METODO della banca: `r` qui si chiama `risposte`, `doc` si
+chiama `documenti`, gli elenchi stanno al primo livello invece che sotto `elenchi`, `data` è
+`creato`, `v` è `versione`; le «confermate» sono `precompilato` meno `modificate`.
+
+## Prova in locale
+
+In `Dropbox/.claude/launch.json` c'è la configurazione `rcauto`:
+`python3 -m http.server 8776 --bind 127.0.0.1 --directory ~/svag-rcauto-repo`.
+
+## Collaudo dell'11.10.2026
+
+Fatto nel browser di anteprima, a 390×844 e a 1280×800, in tema chiaro e scuro:
+
+- cambio di compagnia con auto già in Svizzera, senza link;
+- import dall'Italia col `#pre` dei dati del veicolo e `#salta`, due conducenti (una sotto i
+  25 anni con patente estera) e un danno all'estero in euro;
+- auto nuova dal garage, elettrica, in leasing, con posteggio pubblico (garage precompilato);
+- `#pre` nei due formati, con chiavi vietate, valori sbagliati e testo illeggibile;
+- date e numeri digitati tasto per tasto, ripresa dopo il ricaricamento, «Cancella».
+
+Nessun errore in console, nessun testo sotto i 15 px, nessuno scorrimento orizzontale.
+
+## Limiti
+
+- WhatsApp ed e-mail non sono stati aperti davvero: sul percorso più lungo provato il link
+  `wa.me` è di circa 5'900 caratteri. Va provato su un telefono vero prima del primo cliente;
+  se WhatsApp taglia il testo resta «Copia i dati».
+- «Copia i dati» nel browser di anteprima non ha accesso agli appunti: da riprovare sul telefono.
+- Manca il lettore del ritorno (dal messaggio ai fogli per Generali e Helvetia e alla mail
+  per Zurich): oggi il JSON si legge a mano.
+- I punti aperti della banca restano aperti (prova sul portale Helvetia, tendina «Garage» di
+  Generali): vedi «Prima di mandare il link» nel METODO.
