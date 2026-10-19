@@ -1,6 +1,6 @@
 # La tua auto: i dati per l'assicurazione — wizard RC auto SVAG
 
-Versione **1.0.1** dell'11.10.2026. Copia **locale**: nessun repository remoto, nessun push.
+Versione **1.0.2** dell'11.10.2026. Copia **locale**: nessun repository remoto, nessun push.
 Si pubblica solo quando Giorgio lo decide.
 
 Pagina statica che il cliente apre dal telefono, come il wizard del budget (v1.5): risponde
@@ -107,7 +107,7 @@ Il testo qui sotto serve al tuo programma ed è giusto così: va mandato com'è.
 | `risposte` | `{id: valore}` con gli id della banca, sottodomande comprese. Scelta = codice; scelta multipla = elenco di codici; numeri senza apostrofi; importo in euro = anche `{id}_valuta: "EUR"`; date `GG.MM.AAAA`; mese e anno `MM.AAAA`; «Non lo so» = `nonso`; scelta rapida = il suo codice. Ci sono anche i valori del `#pre`, confermati o no |
 | `conducenti`, `sinistri` | una riga per persona o per danno; `[]` = «nessuno» confermato; `null` = senza risposta. Ogni conducente ha `rif` (`c1`, `c2`…); nei danni `chi: "cond:c1"` più `chi_nome` |
 | `altri_veicoli`, `ritiro_licenza`, `proposta_rifiutata` | come sopra, solo se la domanda era visibile |
-| `precompilato` | id arrivati dal `#pre` |
+| `precompilato` | id arrivati dal `#pre` che contano ancora: visibili, nascosti solo dal `#pre` stesso (i dati del veicolo) o cambiati dal cliente. Un valore del `#pre` la cui domanda è sparita per un'altra risposta (per esempio la provenienza cambiata) non c'è più, né qui né in `risposte` |
 | `modificate` | quelli che il cliente ha cambiato |
 | `non_so` | id con «Non lo so»; per le righe `elenco.N.campo` |
 | `documenti_da_mandare` | documenti segnati «Te lo mando» |
@@ -153,6 +153,19 @@ motore con `--prova`. Corretto nella pagina:
 - il riepilogo diceva «non ne hai corretto nessuno» anche dopo «Qualcosa non torna» sui dati
   dell'auto: ora dice che la segnalazione c'è e che la controlla Giorgio;
 - «compilate il 11.10.2026» → «compilate l'11.10.2026» (e «l'08»).
+
+## Revisione avversaria finale (11.10.2026, notte) — versione 1.0.2
+
+- **WhatsApp aperto due volte.** `window.open(url, "_blank", "noopener")` risponde sempre `null`
+  (è la regola del browser con «noopener»), quindi scattava anche `location.href = url`: la
+  pagina stessa andava su wa.me. Ora si apre senza «noopener» e il legame `opener` si toglie a mano;
+  `location.href` resta solo se il browser blocca la finestra.
+- **Valori del `#pre` orfani.** Un valore precompilato contava anche quando la sua domanda era
+  sparita per un'altra risposta (provenienza cambiata da «import» a «cambio»: restavano paese,
+  intestazione e le domande che ne dipendono). Ora conta solo se la domanda è visibile o è
+  nascosta dal `#pre` stesso («mai», «non se arriva dal #pre», `#salta`).
+- Testi della banca 1.2: «Società o banca delle rate», il perché di «Fino a quando paghi le
+  rate?», l'aiuto della patente degli altri conducenti, il sottotitolo di «Chi tiene l'auto».
 
 ## Limiti
 

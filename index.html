@@ -195,10 +195,10 @@ nav.barra .invisibile { visibility: hidden; }
 <script>
 (function () {
   "use strict";
-  // Wizard RC auto per il cliente, versione 1.0 (11.10.2026).
+  // Wizard RC auto per il cliente, versione 1.0.2 (11.10.2026).
   // Le domande arrivano da domande.js, generato da build.py dalla banca rcauto_domande_v1.json:
   // qui non si scrivono domande. La pagina non trasmette niente: il cliente manda le risposte da sé.
-  var VERSIONE = "1.0.1";
+  var VERSIONE = "1.0.2";
   var CHIAVE = "svag-rcauto-wizard-v1";      // «Cancella» toglie solo questa chiave
   var TITOLO = "La tua auto: i dati per l'assicurazione";
   var B = window.SVAG_RCAUTO;
@@ -454,10 +454,19 @@ nav.barra .invisibile { visibility: hidden; }
     c.val[id] = undefined;
     var x = S.r[id], res;
     if (vuoto(x)) res = undefined;
-    else if (S.pre.hasOwnProperty(id)) res = x;
+    else if (S.pre.hasOwnProperty(id)) res = (visibile(id) || nascostaDalPre(id)) ? x : undefined;
     else res = visibile(id) ? x : undefined;
     c.val[id] = res;
     return res;
+  }
+  // Un valore del #pre conta anche se la sua domanda non si vede, ma solo quando a nasconderla è il #pre
+  // stesso («mai», «non se arriva dal #pre») o il #salta. Se il cliente cambia una risposta che la toglie
+  // (per esempio la provenienza dell'auto), il valore precompilato non resta orfano nel JSON.
+  function nascostaDalPre(id) {
+    var q = Q[id];
+    if (!q || !cond(PASSO_DI[id].visibile_se)) return false;
+    var vs = q.visibile_se;
+    return !vs || !!vs.mai || !!(vs.non && vs.non.pre) || cond(vs);
   }
   function visibile(id) {
     var c = C();
@@ -1182,7 +1191,11 @@ nav.barra .invisibile { visibility: hidden; }
     function su(id, fn) { var b = document.getElementById("inv_" + id); if (b) b.addEventListener("click", function () { raccogli(); salvaSubito(); aggiornaJson(); fn(); }); }
     su("whatsapp", function () {
       var url = "https://wa.me/" + RIT.whatsapp + "?text=" + encodeURIComponent(messaggio());
-      var w = window.open(url, "_blank", "noopener"); if (!w) location.href = url;
+      // senza «noopener» fra le opzioni: con quello window.open() risponde sempre null e la pagina
+      // andrebbe anche lei su wa.me (WhatsApp aperto due volte). Il legame si toglie a mano.
+      var w = null;
+      try { w = window.open(url, "_blank"); } catch (e) {}
+      if (w) { try { w.opener = null; } catch (e) {} } else location.href = url;
       esito.textContent = RIT.esiti.whatsapp;
     });
     su("email", function () {
@@ -1276,7 +1289,9 @@ nav.barra .invisibile { visibility: hidden; }
     out.conducenti = cond0 === undefined ? null : cond0;
     out.sinistri = sin0 === undefined ? null : sin0;
     ["altri_veicoli", "ritiro_licenza", "proposta_rifiutata"].forEach(function (k) { var x = elenco(k); if (x !== undefined) out[k] = x; });
-    out.precompilato = Object.keys(S.pre);
+    // fra i precompilati solo quelli che contano ancora: un valore del #pre rimasto orfano (domanda
+    // tolta da un'altra risposta) non è una conferma del cliente
+    out.precompilato = Object.keys(S.pre).filter(function (k) { return V(k) !== undefined || !same(S.r[k], S.pre[k]); });
     out.modificate = modificate();
     out.non_so = nonso;
     out.documenti_da_mandare = mando;
