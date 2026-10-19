@@ -91,6 +91,7 @@ file»; «Copia» e «Scarica» non mandano niente. Il messaggio è fatto così:
 
 ```
 Ciao Giorgio, ecco le risposte per l'assicurazione dell'auto (Nome), compilate il GG.MM.AAAA.
+(«l'08.…» e «l'11.…» con l'apostrofo)
 Ti mando queste foto:
 - <documento segnato «Te lo mando»>
 Il testo qui sotto serve al tuo programma ed è giusto così: va mandato com'è.
@@ -119,6 +120,11 @@ Rispetto al formato scritto nel METODO della banca: `r` qui si chiama `risposte`
 chiama `documenti`, gli elenchi stanno al primo livello invece che sotto `elenchi`, `data` è
 `creato`, `v` è `versione`; le «confermate» sono `precompilato` meno `modificate`.
 
+Il motore `~/SVAG-tools/rcauto_wizard/rcauto.py importa` legge tutti e due i formati: dal
+collaudo dell'11.10.2026 (caso vero, risposte di prova) la funzione `normalizza` porta il
+formato della pagina a quello della banca, e i «Chi guidava? → cond:c1» dei danni diventano
+«convivente» o «altra» col nome accanto. Se qui cambia una chiave, va cambiata anche lì.
+
 ## Prova in locale
 
 In `Dropbox/.claude/launch.json` c'è la configurazione `rcauto`:
@@ -137,13 +143,24 @@ Fatto nel browser di anteprima, a 390×844 e a 1280×800, in tema chiaro e scuro
 
 Nessun errore in console, nessun testo sotto i 15 px, nessuno scorrimento orizzontale.
 
+## Collaudo col caso vero (11.10.2026, sera)
+
+Link generato dal motore con la scheda vera del cliente (solo dati del veicolo nel `#pre`),
+pagina compilata a 390×844 con risposte di prova dichiarate come tali, «Copia i dati» con un
+clic vero (questa volta è riuscita: il testo è arrivato negli appunti del Mac), import nel
+motore con `--prova`. Corretto nella pagina:
+
+- il riepilogo diceva «non ne hai corretto nessuno» anche dopo «Qualcosa non torna» sui dati
+  dell'auto: ora dice che la segnalazione c'è e che la controlla Giorgio;
+- «compilate il 11.10.2026» → «compilate l'11.10.2026» (e «l'08»).
+
 ## Limiti
 
-- WhatsApp ed e-mail non sono stati aperti davvero: sul percorso più lungo provato il link
-  `wa.me` è di circa 5'900 caratteri. Va provato su un telefono vero prima del primo cliente;
-  se WhatsApp taglia il testo resta «Copia i dati».
-- «Copia i dati» nel browser di anteprima non ha accesso agli appunti: da riprovare sul telefono.
-- Manca il lettore del ritorno (dal messaggio ai fogli per Generali e Helvetia e alla mail
-  per Zurich): oggi il JSON si legge a mano.
+- WhatsApp ed e-mail non sono stati aperti davvero (aprirli manderebbe i dati a WhatsApp o al
+  programma di posta): sul percorso più lungo provato il link `wa.me` è di circa 5'900
+  caratteri, sul caso vero di 5'029. Va provato su un telefono vero prima del primo cliente;
+  se WhatsApp taglia il testo resta «Copia i dati». Alcuni programmi di posta (Outlook su
+  Windows) tagliano i `mailto:` oltre circa 2'000 caratteri.
+- «Copia i dati»: nel primo collaudo non era riuscita, nel secondo sì. Da riprovare anche sul telefono.
 - I punti aperti della banca restano aperti (prova sul portale Helvetia, tendina «Garage» di
   Generali): vedi «Prima di mandare il link» nel METODO.

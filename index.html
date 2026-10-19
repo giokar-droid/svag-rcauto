@@ -1119,8 +1119,12 @@ nav.barra .invisibile { visibility: hidden; }
     var np = Object.keys(S.pre).length;
     if (np) {
       var nm = modificate().length;
-      h += '<div class="box">' + (nm ? "Dei dati che avevo letto dai tuoi documenti ne hai " + (nm === 1 ? "corretto <b>uno</b>." : "corretti <b>" + nm + "</b>.")
-        : "Dei dati che avevo letto dai tuoi documenti non ne hai corretto nessuno.") + "</div>";
+      // «Qualcosa non torna» nella tabella dell'auto è una correzione anche se nessun valore è cambiato
+      var segnalato = V("veicolo_conferma") === "correggi";
+      var t = nm ? "Dei dati che avevo letto dai tuoi documenti ne hai " + (nm === 1 ? "corretto <b>uno</b>." : "corretti <b>" + nm + "</b>.")
+        : (segnalato ? "" : "Dei dati che avevo letto dai tuoi documenti non ne hai corretto nessuno.");
+      if (segnalato) t += (t ? " " : "") + "Nei dati dell'auto mi hai segnalato che qualcosa non torna: lo controllo io sul documento.";
+      h += '<div class="box">' + t + "</div>";
     }
     schermi().forEach(function (sc) {
       var p = PASSO[sc]; if (!p || p.documenti) return;
@@ -1285,7 +1289,7 @@ nav.barra .invisibile { visibility: hidden; }
   function messaggio() {
     var d = datiDaInviare();
     var l = ["Ciao Giorgio, ecco le risposte per l'assicurazione dell'auto" + (S.nome ? " (" + S.nome + ")" : "") +
-             ", compilate il " + dataTesto(new Date()) + "."];
+             ", compilate " + ([8, 11].indexOf(new Date().getDate()) >= 0 ? "l'" : "il ") + dataTesto(new Date()) + "."];
     if (d.documenti_da_mandare.length) {
       l.push("Ti mando queste foto:");
       d.documenti_da_mandare.forEach(function (id) { l.push("- " + DOC[id].nome); });
