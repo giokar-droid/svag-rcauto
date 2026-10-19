@@ -1,6 +1,6 @@
 # La tua auto: i dati per l'assicurazione — wizard RC auto SVAG
 
-Versione **1.0** dell'11.10.2026. Copia **locale**: nessun repository remoto, nessun push.
+Versione **1.0.1** dell'11.10.2026. Copia **locale**: nessun repository remoto, nessun push.
 Si pubblica solo quando Giorgio lo decide.
 
 Pagina statica che il cliente apre dal telefono, come il wizard del budget (v1.5): risponde
