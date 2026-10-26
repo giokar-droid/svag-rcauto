@@ -26,7 +26,7 @@ from pathlib import Path
 
 QUI = Path(__file__).resolve().parent
 BASE_DEFAULT = "http://localhost:8776/"
-DICHIARAZIONI = {"km_annui", "garage", "impiego", "utilizzo_speciale", "viaggi_estero",
+DICHIARAZIONI = {"km_annui", "garage", "garage_lavoro", "impiego", "utilizzo_speciale", "viaggi_estero",
                  "luogo_stazionamento", "officine_partner", "modo_pagamento"}
 
 

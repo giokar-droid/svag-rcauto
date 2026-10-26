@@ -175,5 +175,6 @@ motore con `--prova`. Corretto nella pagina:
   se WhatsApp taglia il testo resta «Copia i dati». Alcuni programmi di posta (Outlook su
   Windows) tagliano i `mailto:` oltre circa 2'000 caratteri.
 - «Copia i dati»: nel primo collaudo non era riuscita, nel secondo sì. Da riprovare anche sul telefono.
-- I punti aperti della banca restano aperti (prova sul portale Helvetia, tendina «Garage» di
-  Generali): vedi «Prima di mandare il link» nel METODO.
+- I punti aperti della banca restano aperti (prova sul portale Helvetia): vedi «Prima di mandare il
+  link» nel METODO. La tendina «Garage» di Generali è rilevata dal 26.10.2026: la banca 1.3 chiede anche
+  dove sta l'auto sul posto di lavoro (`garage_lavoro`, solo col tragitto al lavoro).

@@ -40,7 +40,7 @@ BANCA_DEFAULT = (Path.home() / "Library/CloudStorage/Dropbox/RESOURCES/SVAG/TOOL
 # chiavi interne che non entrano mai nella pagina, a qualsiasi livello di una domanda o di un documento
 CHIAVI_INTERNE = {"per_giorgio", "porta_a", "inventario", "passo"}
 # dichiarazioni del cliente: mai nel #pre (METODO § 9)
-DICHIARAZIONI = {"km_annui", "garage", "impiego", "utilizzo_speciale", "viaggi_estero",
+DICHIARAZIONI = {"km_annui", "garage", "garage_lavoro", "impiego", "utilizzo_speciale", "viaggi_estero",
                  "luogo_stazionamento", "officine_partner", "modo_pagamento"}
 # tipi che la pagina sa disegnare
 TIPI = {"scelta", "scelta_multipla", "si_no", "numero", "importo", "testo", "testo_lungo",
@@ -273,7 +273,7 @@ def main():
     testa = (f"/* Generato da build.py il {datetime.now():%d.%m.%Y %H:%M} dalla banca "
              f"{pag['banca']} {pag['versione_banca']} del {pag['data_banca']}.\n"
              f"   Non modificare a mano: si corregge la banca e si rilancia build.py. */\n")
-    USCITA.write_text(testa + "window.SVAG_RCAUTO = " + corpo + ";\n", encoding="utf-8")
+    USCITA.write_text(testa + "window.SVAG_RCAUTO = " + corpo + ";\n", encoding="utf-8", newline="\n")   # a capo Unix anche su Windows
     n_dom = sum(1 for d in domande.values() if d.get("visibile_se") != {"mai": True})
     print(f"Scritto {USCITA.name}: {len(pag['passi'])} passi, {n_dom} domande "
           f"(+ {len(domande) - n_dom} solo da #pre), {len(pag['documenti'])} documenti, "
